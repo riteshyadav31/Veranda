@@ -1,0 +1,191 @@
+/* ==========================================================================
+   Veranda — responsive rules
+   Link this AFTER style.css. Breakpoints: 1080px (small desktop),
+   900px (tablet), 640px (mobile), 420px (small mobile)
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Small desktop / large tablet
+   -------------------------------------------------------------------------- */
+@media (max-width: 1080px) {
+  :root {
+    --gutter: 1.5rem;
+    --step-5: 3rem;
+    --step-4: 2.25rem;
+    --sp-9: 5rem;
+    --sp-8: 3.5rem;
+  }
+
+  .hero__grid { gap: var(--sp-6); }
+  .hero__collage { grid-template-rows: 130px 165px; }
+
+  .detail-layout { grid-template-columns: minmax(0, 1fr) 300px; }
+  .dash { grid-template-columns: 210px minmax(0, 1fr); }
+  .footer__grid { grid-template-columns: 1.4fr repeat(3, 1fr); gap: var(--sp-5); }
+}
+
+/* --------------------------------------------------------------------------
+   Tablet — collapse navigation into a drawer
+   -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .nav__inner { gap: var(--sp-4); }
+
+  .nav__toggle { display: grid; margin-left: auto; }
+
+  .nav__drawer {
+    position: fixed;
+    top: var(--nav-h);
+    left: 0;
+    right: 0;
+    max-height: calc(100vh - var(--nav-h));
+    overflow-y: auto;
+    display: block;
+    background: var(--card);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    box-shadow: var(--shadow);
+    padding: var(--sp-4) var(--gutter) var(--sp-6);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: opacity var(--fast), transform var(--fast), visibility var(--fast);
+  }
+
+  .nav__links,
+  .nav__actions {
+    flex-direction: column;
+    align-items: stretch;
+    margin-left: 0;
+  }
+
+  .nav__links { gap: 0; }
+
+  .nav__actions {
+    gap: var(--sp-3);
+    margin-top: var(--sp-5);
+  }
+
+  .nav__link {
+    padding-block: var(--sp-4);
+    border-bottom: 1px solid var(--line);
+    font-size: var(--step-1);
+  }
+  .nav__link::after { display: none; }
+  .nav__link.is-active { color: var(--green); }
+
+  .nav.is-open .nav__drawer {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  body.nav-open { overflow: hidden; }
+
+  /* Layout stacking */
+  .hero { padding-bottom: var(--sp-8); }
+  .hero__grid { grid-template-columns: 1fr; }
+  .hero h1 { max-width: 16ch; }
+  .hero__collage { grid-template-rows: 150px 150px; }
+  .hero__stats { margin-top: var(--sp-6); gap: var(--sp-6); }
+
+  .search--raised { margin-top: var(--sp-6); }
+  .search__fields { grid-template-columns: 1fr 1fr; }
+  .search__fields .btn { width: 100%; }
+
+  .grid--3,
+  .grid--4 { grid-template-columns: repeat(2, 1fr); }
+
+  .cta { grid-template-columns: 1fr; padding: var(--sp-7); }
+  .cta__actions { justify-content: flex-start; }
+
+  .gallery__main { height: 340px; }
+
+  .detail-layout { grid-template-columns: 1fr; }
+  .panel--sticky { position: static; }
+
+  .dash { grid-template-columns: 1fr; }
+  .dash__side { position: static; }
+  .dash__menu { grid-template-columns: repeat(2, 1fr); display: grid; }
+
+  .stat-row { grid-template-columns: repeat(2, 1fr); }
+
+  .auth { grid-template-columns: 1fr; gap: var(--sp-6); }
+  .auth__pitch { max-width: 52ch; }
+
+  .split { grid-template-columns: 1fr; gap: var(--sp-6); }
+
+  .footer__grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* --------------------------------------------------------------------------
+   Mobile
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  :root {
+    --gutter: 1.125rem;
+    --step-5: 2.5rem;
+    --step-4: 1.9rem;
+    --step-3: 1.6rem;
+    --step-2: 1.3rem;
+    --sp-9: 3.5rem;
+    --sp-8: 2.75rem;
+    --sp-7: 2rem;
+  }
+
+  .section-head { flex-direction: column; align-items: flex-start; }
+  .section-head .btn { align-self: stretch; }
+
+  .hero__collage { grid-template-columns: 1fr; grid-template-rows: 190px 120px; }
+  .hero__frame--tall { grid-row: auto; border-radius: var(--radius-lg); }
+  .hero__frame--hide-sm { display: none; }
+  .hero__stats { flex-wrap: wrap; gap: var(--sp-5); }
+  .hero__cta .btn { width: 100%; }
+
+  .search { padding: var(--sp-4); }
+  .search__tabs { overflow-x: auto; }
+  .search__fields { grid-template-columns: 1fr; }
+
+  .card-grid { grid-template-columns: 1fr; }
+  .grid--3,
+  .grid--4 { grid-template-columns: 1fr; }
+
+  .form-grid { grid-template-columns: 1fr; }
+  .form-card { padding: var(--sp-5); }
+  .form-actions .btn { width: 100%; }
+
+  .gallery__main { height: 240px; }
+  .gallery__nav { width: 36px; height: 36px; }
+  .gallery__thumb { width: 74px; height: 58px; }
+
+  .stat-row { grid-template-columns: 1fr; }
+  .dash__menu { grid-template-columns: 1fr; }
+
+  .panel { padding: var(--sp-5); }
+
+  .footer__grid { grid-template-columns: 1fr; gap: var(--sp-6); }
+  .footer__base { flex-direction: column; gap: var(--sp-2); }
+
+  .toolbar { align-items: flex-start; }
+}
+
+/* --------------------------------------------------------------------------
+   Small mobile
+   -------------------------------------------------------------------------- */
+@media (max-width: 420px) {
+  .brand { font-size: 1.15rem; }
+  .hero__stat strong { font-size: var(--step-1); }
+  .price-block strong { font-size: var(--step-2); }
+}
+
+/* --------------------------------------------------------------------------
+   Step 3 additions — listing rows and form repeater
+   -------------------------------------------------------------------------- */
+@media (max-width: 640px) {
+  .dash-item {
+    grid-template-columns: 76px minmax(0, 1fr);
+    align-items: start;
+  }
+  .dash-item__media { width: 76px; height: 62px; }
+  .dash-item__actions { grid-column: 1 / -1; justify-content: flex-start; }
+  .photo-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
+}

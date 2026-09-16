@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Browse verified homes, plots and commercial property across Prayagraj and Uttar Pradesh." />
+    <title>Veranda — Property for sale and rent in Prayagraj</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Karla:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="nav" data-nav>
+      <div class="shell nav__inner">
+        <a class="brand" href="index.html">
+          <span class="brand__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11 12 4l8 7"/><path d="M6 10v10h12V10"/></svg></span>
+          Veranda
+        </a>
+
+        <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
+          <span aria-hidden="true"></span>
+        </button>
+
+        <div class="nav__drawer" id="nav-drawer">
+          <ul class="nav__links">
+            <li><a class="nav__link" href="index.html">Home</a></li>
+            <li><a class="nav__link" href="properties.html">Properties</a></li>
+            <li><a class="nav__link" href="about.html">About</a></li>
+            <li><a class="nav__link" href="contact.html">Contact</a></li>
+            <li><a class="nav__link" href="dashboard.html">Dashboard</a></li>
+          </ul>
+          <div class="nav__actions">
+            <a class="btn btn--ghost btn--sm" href="login.html">Sign in</a>
+            <a class="btn btn--primary btn--sm" href="add-property.html">List a property</a>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero">
+        <div class="shell hero__grid">
+          <div class="hero__copy">
+            <p class="hero__eyebrow">412 homes listed this month</p>
+            <h1>Find the address you <span class="hero__title-accent">stay</span> at.</h1>
+            <p>
+              Verified listings from owners and licensed agents across Prayagraj and the
+              wider region. Compare prices, walk through photos, and talk to the person
+              who actually holds the keys.
+            </p>
+            <div class="hero__cta">
+              <a class="btn btn--primary" href="properties.html">Browse properties</a>
+              <a class="btn btn--ghost" href="add-property.html">List your property</a>
+            </div>
+            <div class="hero__stats">
+              <div class="hero__stat"><strong>1,240</strong><span>Active listings</span></div>
+              <div class="hero__stat"><strong>36</strong><span>Localities covered</span></div>
+              <div class="hero__stat"><strong>98%</strong><span>Enquiries answered</span></div>
+            </div>
+          </div>
+
+          <div class="hero__collage">
+            <div class="hero__frame hero__frame--tall">
+              <div class="ph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.8V21h14V9.8"/><path d="M10 21v-6h4v6"/></svg></div>
+              <p class="hero__badge"><strong>3 BHK in Civil Lines</strong>&#8377;94 L &middot; 1,850 sq ft</p>
+            </div>
+            <div class="hero__frame hero__frame--brass"><div class="ph ph--brass" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.8V21h14V9.8"/><path d="M10 21v-6h4v6"/></svg></div></div>
+            <div class="hero__frame hero__frame--hide-sm"><div class="ph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.8V21h14V9.8"/><path d="M10 21v-6h4v6"/></svg></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section section--tight" aria-labelledby="search-heading">
+        <div class="shell">
+          <h2 class="sr-only" id="search-heading">Search properties</h2>
+          <div class="search search--raised">
+            <div class="search__tabs" role="tablist" aria-label="What are you looking for">
+              <button class="search__tab is-active" type="button" role="tab" aria-selected="true" data-search-tab="buy">Buy</button>
+              <button class="search__tab" type="button" role="tab" aria-selected="false" data-search-tab="rent">Rent</button>
+              <button class="search__tab" type="button" role="tab" aria-selected="false" data-search-tab="commercial">Commercial</button>
+              <button class="search__tab" type="button" role="tab" aria-selected="false" data-search-tab="plot">Plots</button>
+            </div>
+
+            <form class="search__fields" data-search-form>
+              <div class="field">
+                <label for="search-location">Locality or city</label>
+                <input type="search" id="search-location" name="location" placeholder="Civil Lines, Prayagraj" />
+              </div>
+              <div class="field">
+                <label for="search-type">Property type</label>
+                <select id="search-type" name="type">
+                  <option value="">Any type</option>
+                  <option value="house">House</option>
+                  <option value="apartment">Apartment</option>
+                  <option value="villa">Villa</option>
+                  <option value="plot">Plot</option>
+                  <option value="commercial">Commercial</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="search-budget">Budget up to</label>
+                <select id="search-budget" name="budget">
+                  <option value="">No limit</option>
+                  <option value="2500000">&#8377;25 L</option>
+                  <option value="5000000">&#8377;50 L</option>
+                  <option value="10000000">&#8377;1 Cr</option>
+                  <option value="25000000">&#8377;2.5 Cr</option>
+                </select>
+              </div>
+              <button class="btn btn--primary" type="submit">Search</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="featured-heading">
+        <div class="shell">
+          <div class="section-head">
+            <div>
+              <h2 id="featured-heading">Featured this week</h2>
+              <p>Hand-picked listings with complete documentation and recent photographs.</p>
+            </div>
+            <a class="btn btn--ghost" href="properties.html">See all listings</a>
+          </div>
+
+          <div class="card-grid" data-featured-list></div>
+        </div>
+      </section>
+
+      <section class="section section--white" aria-labelledby="locations-heading">
+        <div class="shell">
+          <div class="section-head">
+            <div>
+              <h2 id="locations-heading">Where people are buying</h2>
+              <p>The localities drawing the most enquiries right now.</p>
+            </div>
+          </div>
+
+          <div class="grid grid--4" data-locations-list>
+            <a class="location-card" href="properties.html?location=Civil%20Lines">
+              <span>
+                <span class="location-card__name">Civil Lines</span><br />
+                <span class="location-card__count">184 properties</span>
+              </span>
+            </a>
+            <a class="location-card" href="properties.html?location=Georgetown">
+              <span>
+                <span class="location-card__name">Georgetown</span><br />
+                <span class="location-card__count">126 properties</span>
+              </span>
+            </a>
+            <a class="location-card" href="properties.html?location=Ashok%20Nagar">
+              <span>
+                <span class="location-card__name">Ashok Nagar</span><br />
+                <span class="location-card__count">97 properties</span>
+              </span>
+            </a>
+            <a class="location-card" href="properties.html?location=Naini">
+              <span>
+                <span class="location-card__name">Naini</span><br />
+                <span class="location-card__count">73 properties</span>
+              </span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="shell">
+          <div class="cta">
+            <div>
+              <h2>Your property deserves a proper listing.</h2>
+              <p>
+                Add photos, floor area and pricing in a few minutes. Enquiries land in your
+                dashboard, not in a stranger&rsquo;s inbox.
+              </p>
+            </div>
+            <div class="cta__actions">
+              <a class="btn btn--brass" href="add-property.html">List a property</a>
+              <a class="btn btn--light" href="contact.html">Talk to us</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="shell">
+        <div class="footer__grid">
+          <div class="footer__about">
+            <a class="brand" href="index.html">
+              <span class="brand__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11 12 4l8 7"/><path d="M6 10v10h12V10"/></svg></span>
+              Veranda
+            </a>
+            <p>Homes, plots and commercial space across Uttar Pradesh, listed by owners and verified agents.</p>
+          </div>
+
+          <div class="footer__col">
+            <h4>Browse</h4>
+            <ul>
+              <li><a href="properties.html?type=apartment">Apartments</a></li>
+              <li><a href="properties.html?type=villa">Villas</a></li>
+              <li><a href="properties.html?type=plot">Plots</a></li>
+              <li><a href="properties.html?purpose=rent">Rentals</a></li>
+            </ul>
+          </div>
+
+          <div class="footer__col">
+            <h4>Sell or rent</h4>
+            <ul>
+              <li><a href="add-property.html">List a property</a></li>
+              <li><a href="dashboard.html">Manage listings</a></li>
+              <li><a href="login.html">Sign in</a></li>
+            </ul>
+          </div>
+
+          <div class="footer__col">
+            <h4>Company</h4>
+            <ul>
+              <li><a href="about.html">About us</a></li>
+              <li><a href="contact.html">Contact</a></li>
+              <li><a href="contact.html#offices">Offices</a></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer__base">
+          <p>&copy; <span data-year>2026</span> Veranda Estates. All rights reserved.</p>
+          <p>Prayagraj &middot; Lucknow &middot; Varanasi</p>
+        </div>
+      </div>
+    </footer>
+    <script type="module" src="js/home.js"></script>
+  </body>
+</html>
