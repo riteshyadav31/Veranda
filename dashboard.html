@@ -22,7 +22,17 @@
     <header class="nav" data-nav></header>
 
     <main id="main">
-      <div class="shell dash">
+      <section class="section section--tight" data-dashboard-loading>
+        <div class="shell">
+          <div class="state" data-tone="loading">
+            <span class="loading-indicator" aria-hidden="true"><span></span><span></span><span></span></span>
+            <h3>Loading your dashboard</h3>
+            <p>Fetching your account and dashboard data.</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="shell dash" data-dashboard-shell hidden>
         <aside class="dash__side">
           <div class="dash__user">
             <span class="avatar" aria-hidden="true">V</span>
@@ -67,16 +77,6 @@
               <div class="stat" data-seller-only><span>Last updated</span><strong data-stat-updated>&mdash;</strong></div>
             </div>
 
-            <div class="panel">
-              <div class="section-head" style="margin-bottom: 1.25rem">
-                <h3 data-dashboard-list-title>Recent listings</h3>
-                <div style="display:flex; gap: 0.5rem; flex-wrap: wrap;">
-                  <a class="btn btn--ghost btn--sm" href="#listings" data-dash-link="listings" data-seller-only>See all</a>
-                  <a class="btn btn--ghost btn--sm" href="#favorites" data-dash-link="favorites" data-buyer-only>View favorites</a>
-                </div>
-              </div>
-              <div class="dash-list" data-recent-list></div>
-            </div>
           </section>
 
           <section data-dash-panel="listings" aria-label="My listings" hidden>

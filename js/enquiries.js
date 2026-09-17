@@ -1,6 +1,7 @@
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -33,6 +34,13 @@ function statusLabel(status = "new") {
 
 function statusClass(status = "new") {
   return `status-pill status-pill--${String(status || "new").toLowerCase()}`;
+}
+
+function describeEnquiryError(error, action = "complete this action") {
+  if (error?.code === "permission-denied") {
+    return `Firebase permissions are not deployed for ${action}. Publish the latest firestore.rules, then try again.`;
+  }
+  return error?.message || `Could not ${action}. Please try again.`;
 }
 
 function sortByNewest(left, right) {
@@ -80,16 +88,20 @@ export function makeBuyerRow(enquiry) {
       <div class="dash-item__actions">
         <span class="${statusClass(enquiry.status)}">${escapeHtml(statusLabel(enquiry.status))}</span>
         <small>${escapeHtml(formatDate(enquiry.createdAt))}</small>
+        <button type="button" class="btn btn--danger btn--sm" data-cancel-enquiry="${escapeHtml(enquiry.id)}">Cancel Enquiry</button>
       </div>
     </div>
   `;
 }
 
 export function makeSellerRow(enquiry) {
-  const actions = [
-    '<button type="button" class="btn btn--ghost btn--sm" data-enquiry-status="contacted" data-enquiry-id="' + escapeHtml(enquiry.id) + '">Mark as Contacted</button>',
-    '<button type="button" class="btn btn--ghost btn--sm" data-enquiry-status="closed" data-enquiry-id="' + escapeHtml(enquiry.id) + '">Mark as Closed</button>'
-  ].join("");
+  const actions = [];
+  if (enquiry.status === "new") {
+    actions.push('<button type="button" class="btn btn--ghost btn--sm" data-enquiry-status="contacted" data-enquiry-id="' + escapeHtml(enquiry.id) + '">Mark as Contacted</button>');
+    actions.push('<button type="button" class="btn btn--ghost btn--sm" data-enquiry-status="closed" data-enquiry-id="' + escapeHtml(enquiry.id) + '">Mark as Closed</button>');
+  } else if (enquiry.status === "contacted") {
+    actions.push('<button type="button" class="btn btn--ghost btn--sm" data-enquiry-status="closed" data-enquiry-id="' + escapeHtml(enquiry.id) + '">Mark as Closed</button>');
+  }
 
   return `
     <div class="dash-item" data-enquiry-id="${escapeHtml(enquiry.id)}">
@@ -105,7 +117,7 @@ export function makeSellerRow(enquiry) {
       <div class="dash-item__actions enquiry-item__actions">
         <span class="${statusClass(enquiry.status)}">${escapeHtml(statusLabel(enquiry.status))}</span>
         <small>${escapeHtml(formatDate(enquiry.createdAt))}</small>
-        <div class="enquiry-item__buttons">${actions}</div>
+        ${actions.length ? `<div class="enquiry-item__buttons">${actions.join("")}</div>` : ""}
       </div>
     </div>
   `;
@@ -220,6 +232,69 @@ export async function updateEnquiryStatus(enquiryId, status) {
   return true;
 }
 
+export async function cancelEnquiry(enquiryId) {
+  if (!auth.currentUser) {
+    throw new Error("Please sign in again to cancel this enquiry.");
+  }
+
+  await deleteDoc(doc(db, DB.enquiries, enquiryId));
+  return true;
+}
+
+export function bindBuyerCancelButtons(container, onCancelled) {
+  if (!container) return;
+
+  container.querySelectorAll("[data-cancel-enquiry]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const enquiryId = button.dataset.cancelEnquiry;
+      if (!enquiryId || button.disabled) return;
+      if (!window.confirm("Cancel this enquiry? It will be removed from the seller's enquiries.")) return;
+
+      button.disabled = true;
+      button.setAttribute("aria-busy", "true");
+      button.innerHTML = '<span class="spinner" aria-hidden="true"></span><span>Cancelling...</span>';
+
+      try {
+        await cancelEnquiry(enquiryId);
+        showToast("Enquiry cancelled.", "success");
+        await onCancelled?.();
+      } catch (error) {
+        showToast(describeEnquiryError(error, "cancel this enquiry"), "error");
+        button.disabled = false;
+        button.removeAttribute("aria-busy");
+        button.textContent = "Cancel Enquiry";
+      }
+    });
+  });
+}
+
+export function bindEnquiryStatusButtons(container, onUpdated) {
+  if (!container) return;
+
+  container.querySelectorAll("[data-enquiry-status]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const status = button.dataset.enquiryStatus;
+      const enquiryId = button.dataset.enquiryId;
+      if (!status || !enquiryId) return;
+
+      button.disabled = true;
+      button.setAttribute("aria-busy", "true");
+      button.innerHTML = '<span class="spinner" aria-hidden="true"></span><span>Updating...</span>';
+
+      try {
+        await updateEnquiryStatus(enquiryId, status);
+        showToast(`Enquiry marked as ${statusLabel(status)}.`, "success");
+        await onUpdated?.();
+      } catch (error) {
+        showToast(error?.message || "Could not update enquiry status.", "error");
+        button.disabled = false;
+        button.removeAttribute("aria-busy");
+        button.textContent = status === "contacted" ? "Mark as Contacted" : "Mark as Closed";
+      }
+    });
+  });
+}
+
 export async function loadBuyerEnquiriesPage() {
   const container = qs("[data-my-enquiries-list]");
   const count = qs("[data-result-count]");
@@ -248,6 +323,7 @@ export async function loadBuyerEnquiriesPage() {
     }
 
     container.innerHTML = enquiries.map(makeBuyerRow).join("");
+    bindBuyerCancelButtons(container, loadBuyerEnquiriesPage);
   } catch (error) {
     renderState(container, {
       title: "Could not load your enquiries",
@@ -286,26 +362,7 @@ export async function loadSellerEnquiriesPage() {
 
     container.innerHTML = enquiries.map(makeSellerRow).join("");
 
-    document.querySelectorAll("[data-enquiry-status]").forEach((button) => {
-      button.addEventListener("click", async () => {
-        const status = button.dataset.enquiryStatus;
-        const enquiryId = button.dataset.enquiryId;
-        if (!status || !enquiryId) return;
-
-        button.disabled = true;
-        button.textContent = "Updating...";
-
-        try {
-          await updateEnquiryStatus(enquiryId, status);
-          showToast(`Enquiry marked as ${statusLabel(status)}.`, "success");
-          await loadSellerEnquiriesPage();
-        } catch (error) {
-          showToast(error?.message || "Could not update enquiry status.", "error");
-          button.disabled = false;
-          button.textContent = status === "contacted" ? "Mark as Contacted" : "Mark as Closed";
-        }
-      });
-    });
+    bindEnquiryStatusButtons(container, loadSellerEnquiriesPage);
   } catch (error) {
     renderState(container, {
       title: "Could not load enquiries",

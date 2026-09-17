@@ -115,10 +115,7 @@ export async function loadProperty(propertyId) {
     const baths = qs("[data-property-baths]");
     const price = qs("[data-property-price]");
     const note = qs("[data-property-price-note]");
-    const owner = qs("[data-property-owner]");
     const amenitiesList = qs("[data-property-amenities]");
-    const contactButton = qs("[data-contact-owner]");
-    const contactNote = qs("[data-contact-note]");
     const crumb = qs("[data-property-crumb]");
 
     if (title) title.textContent = property.title || "Untitled listing";
@@ -136,7 +133,6 @@ export async function loadProperty(propertyId) {
     if (baths) baths.textContent = Number(property.bathrooms ?? 0) || "—";
     if (price) price.textContent = formatPrice(property.price);
     if (note) note.textContent = property.listingType === "rent" ? "Per month" : "Total asking price";
-    if (owner) owner.textContent = property.ownerName || "Owner";
     if (crumb) crumb.textContent = property.title || "Listing";
 
     if (amenitiesList) {
@@ -144,17 +140,6 @@ export async function loadProperty(propertyId) {
       amenitiesList.innerHTML = amenities.length
         ? amenities.map((item) => `<li>${escapeHtml(item)}</li>`).join("")
         : "<li>No amenities listed.</li>";
-    }
-
-    if (contactButton) {
-      contactButton.href = property.contact ? `tel:${property.contact}` : "#";
-      contactButton.textContent = property.contact ? "Call owner" : "Contact unavailable";
-      if (!property.contact) {
-        contactButton.setAttribute("aria-disabled", "true");
-      }
-    }
-    if (contactNote) {
-      contactNote.textContent = property.contact ? `Owner contact: ${property.contact}` : "The owner has not added a contact number yet.";
     }
 
     renderGallery(property.images);
@@ -167,13 +152,26 @@ export async function loadProperty(propertyId) {
       favoriteButton.textContent = isFavorite ? "♥ Saved to favorites" : "♡ Save to favorites";
       favoriteButton.setAttribute("aria-pressed", String(isFavorite));
       favoriteButton.onclick = async () => {
-        const next = await toggleFavorite(propertyId);
-        if (next === null) return;
+        if (favoriteButton.disabled) return;
+        favoriteButton.disabled = true;
+        favoriteButton.setAttribute("aria-busy", "true");
+        favoriteButton.innerHTML = '<span class="spinner" aria-hidden="true"></span><span>Saving...</span>';
 
-        const hasFavorite = next === true;
-        favoriteButton.classList.toggle("is-active", hasFavorite);
-        favoriteButton.textContent = hasFavorite ? "♥ Saved to favorites" : "♡ Save to favorites";
-        favoriteButton.setAttribute("aria-pressed", String(hasFavorite));
+        try {
+          const next = await toggleFavorite(propertyId);
+          if (next === null) return;
+
+          const hasFavorite = next === true;
+          favoriteButton.classList.toggle("is-active", hasFavorite);
+          favoriteButton.textContent = hasFavorite ? "♥ Saved to favorites" : "♡ Save to favorites";
+          favoriteButton.setAttribute("aria-pressed", String(hasFavorite));
+          window.dispatchEvent(new CustomEvent("favorites:updated", {
+            detail: { propertyId, isFavorite: hasFavorite }
+          }));
+        } finally {
+          favoriteButton.disabled = false;
+          favoriteButton.removeAttribute("aria-busy");
+        }
       };
     }
 
@@ -197,7 +195,8 @@ export async function loadProperty(propertyId) {
           const submitButton = qs("[data-enquiry-submit]", enquiryForm);
           if (submitButton) {
             submitButton.disabled = true;
-            submitButton.textContent = "Sending...";
+            submitButton.setAttribute("aria-busy", "true");
+            submitButton.innerHTML = '<span class="spinner" aria-hidden="true"></span><span>Sending...</span>';
           }
 
           try {
@@ -224,6 +223,7 @@ export async function loadProperty(propertyId) {
             const submitButton = qs("[data-enquiry-submit]", enquiryForm);
             if (submitButton) {
               submitButton.disabled = false;
+              submitButton.removeAttribute("aria-busy");
               submitButton.textContent = "Send Enquiry";
             }
           }

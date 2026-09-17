@@ -54,6 +54,42 @@ function setupTabs() {
   }
 }
 
+function setupRoleChoices() {
+  qsa("[data-role-choice]").forEach((choice) => {
+    choice.addEventListener("click", () => {
+      const target = choice.dataset.roleTarget;
+      const role = normalizeRole(choice.dataset.roleChoice);
+      const form = qs(`[data-auth-form="${target}"]`);
+      if (!form) return;
+
+      const input = qs("[name='role']", form);
+      if (input) input.value = role;
+
+      qsa(`[data-role-target="${target}"]`).forEach((option) => {
+        const active = option === choice;
+        option.classList.toggle("is-active", active);
+        option.setAttribute("aria-pressed", String(active));
+      });
+    });
+  });
+}
+
+function setAuthBusy(form, busy, label) {
+  const button = qs("button[type='submit']", form);
+  if (!button) return;
+
+  if (busy) {
+    button.dataset.idleLabel = label;
+    button.disabled = true;
+    button.setAttribute("aria-busy", "true");
+    button.innerHTML = `<span class="spinner" aria-hidden="true"></span><span>${label}</span>`;
+  } else {
+    button.disabled = false;
+    button.removeAttribute("aria-busy");
+    button.textContent = button.dataset.idleLabel || label;
+  }
+}
+
 export function describeError(error) {
   if (!error) {
     return "Something went wrong.";
@@ -78,6 +114,8 @@ export function describeError(error) {
       return "Network error. Please check your internet connection.";
     case "auth/operation-not-allowed":
       return "Email/password authentication is not enabled in Firebase.";
+    case "permission-denied":
+      return "You do not have permission to cancel this enquiry. Publish the latest Firestore rules and try again.";
     default:
       return error.message || "Something went wrong.";
   }
@@ -212,6 +250,7 @@ function setupForms() {
           }
 
           if (status) status.textContent = "Creating account...";
+          setAuthBusy(form, true, "Creating account...");
 
           await register(name, email, password, phone, role);
 
@@ -230,8 +269,9 @@ function setupForms() {
           }
 
           if (status) status.textContent = "Signing in...";
+          setAuthBusy(form, true, "Signing in...");
 
-          await signIn(email, password);
+          const user = await signIn(email, password);
 
           if (status) status.textContent = "Login successful!";
 
@@ -241,6 +281,7 @@ function setupForms() {
         }
       } catch (error) {
         console.error(error);
+        setAuthBusy(form, false, formType === "register" ? "Create account" : "Sign in");
 
         if (status) {
           status.textContent = describeError(error);
@@ -252,5 +293,6 @@ function setupForms() {
 
 onReady(() => {
   setupTabs();
+  setupRoleChoices();
   setupForms();
 });

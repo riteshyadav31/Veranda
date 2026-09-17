@@ -18,7 +18,7 @@ import {
 import { auth, db, DB, isConfigured } from "./firebase-config.js";
 import { guardPage, getUserProfile, describeError, normalizeRole, signOut } from "./auth.js";
 import { bindFavoriteButtons, fetchFavoriteProperties, getFavoriteIds } from "./favorites.js";
-import { fetchBuyerEnquiries, fetchSellerEnquiries, makeBuyerRow, makeSellerRow } from "./enquiries.js";
+import { bindBuyerCancelButtons, bindEnquiryStatusButtons, fetchBuyerEnquiries, fetchSellerEnquiries, makeBuyerRow, makeSellerRow } from "./enquiries.js";
 import "./navbar.js";
 import {
   qs,
@@ -40,6 +40,13 @@ import {
 } from "./utils.js";
 
 let myProperties = [];
+
+function setDashboardLoading(loading) {
+  const state = qs("[data-dashboard-loading]");
+  const shell = qs("[data-dashboard-shell]");
+  if (state) state.hidden = !loading;
+  if (shell) shell.hidden = loading;
+}
 
 function setupPanels() {
   const links = qsa("[data-dash-link]");
@@ -72,12 +79,38 @@ function setupDashboardLogout() {
 
   button.addEventListener("click", async () => {
     button.disabled = true;
+    button.setAttribute("aria-busy", "true");
+    button.innerHTML = '<span class="spinner" aria-hidden="true"></span><span>Signing out...</span>';
     try {
       await signOut();
       window.location.href = "index.html";
     } catch (error) {
       button.disabled = false;
+      button.removeAttribute("aria-busy");
+      button.textContent = "Logout";
       showToast(describeError(error), "error");
+    }
+  });
+}
+
+function setupFavoriteUpdates() {
+  window.addEventListener("favorites:updated", (event) => {
+    if (event.detail?.isFavorite !== false) return;
+
+    const propertyId = event.detail.propertyId;
+    const container = qs("[data-dashboard-favorites]");
+    const button = propertyId && container?.querySelector(`[data-favorite-toggle="${CSS.escape(propertyId)}"]`);
+    if (!button) return;
+
+    button.closest(".property-card")?.remove();
+    const remaining = container.querySelectorAll(".property-card").length;
+    const count = qs("[data-stat-favorites]");
+    if (count) count.textContent = String(remaining);
+    if (!remaining) {
+      renderState(container, {
+        title: "No favorites yet",
+        message: "Save properties you like to see them here."
+      });
     }
   });
 }
@@ -117,8 +150,7 @@ function renderBuyerDashboard(user, profile) {
   });
 
   panels.forEach((panel) => {
-    const shouldShow = ["overview", "favorites", "enquiries", "profile"].includes(panel.dataset.dashPanel);
-    panel.hidden = !shouldShow;
+    panel.hidden = panel.dataset.dashPanel !== "overview";
   });
 
   qsa("[data-user-name]").forEach((el) => {
@@ -138,10 +170,6 @@ function renderBuyerDashboard(user, profile) {
   const listTitle = qs("[data-dashboard-list-title]");
   if (listTitle) listTitle.textContent = "Recent favorites";
 
-  const profilePanel = qs('[data-dash-panel="profile"]');
-  if (profilePanel) {
-    profilePanel.hidden = false;
-  }
 }
 
 function renderDashboardFavorites(properties) {
@@ -178,6 +206,21 @@ function renderDashboardEnquiries(enquiries, role) {
   }
 
   container.innerHTML = enquiries.map(role === "seller" ? makeSellerRow : makeBuyerRow).join("");
+  if (role === "seller") {
+    bindEnquiryStatusButtons(container, async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+      const updated = await fetchSellerEnquiries(user.uid);
+      renderDashboardEnquiries(updated, role);
+    });
+  } else {
+    bindBuyerCancelButtons(container, async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+      const updated = await fetchBuyerEnquiries(user.uid);
+      renderDashboardEnquiries(updated, role);
+    });
+  }
 }
 
 export async function fetchMyProperties(uid) {
@@ -280,6 +323,7 @@ function setupDelete() {
 
     button.disabled = true;
     button.setAttribute("aria-busy", "true");
+    button.innerHTML = '<span class="spinner" aria-hidden="true"></span><span>Deleting...</span>';
 
     try {
       await deleteProperty(propertyId);
@@ -289,6 +333,7 @@ function setupDelete() {
     } catch (error) {
       button.disabled = false;
       button.removeAttribute("aria-busy");
+      button.textContent = "Delete";
       showToast(describeError(error), "error");
     }
   });
@@ -314,6 +359,7 @@ export async function loadDashboardData(uid, role = "buyer") {
       };
       renderAll(0, enquiryStats);
       renderDashboardEnquiries(enquiries, role);
+      setDashboardLoading(false);
       return;
     }
 
@@ -335,6 +381,7 @@ export async function loadDashboardData(uid, role = "buyer") {
       renderStats([], favoriteCount, { total: totalEnquiries, new: 0, contacted: 0, closed: 0 });
       renderDashboardFavorites([]);
       renderDashboardEnquiries(buyerEnquiries, role);
+      setDashboardLoading(false);
       return;
     }
 
@@ -351,6 +398,7 @@ export async function loadDashboardData(uid, role = "buyer") {
     renderAll(favoriteCount, { total: totalEnquiries, new: 0, contacted: 0, closed: 0 });
     renderDashboardFavorites(favoriteProperties);
     renderDashboardEnquiries(buyerEnquiries, role);
+    setDashboardLoading(false);
   } catch (error) {
     const failure = {
       title: role === "seller" ? "Could not load your listings" : "Could not load your favorites",
@@ -359,6 +407,11 @@ export async function loadDashboardData(uid, role = "buyer") {
     };
     renderState(recent, failure);
     renderState(owned, failure);
+    setDashboardLoading(false);
+    const favorites = qs("[data-dashboard-favorites]");
+    const enquiries = qs("[data-dashboard-enquiries]");
+    if (favorites) renderState(favorites, failure);
+    if (enquiries) renderState(enquiries, failure);
   }
 }
 
@@ -366,6 +419,7 @@ onReady(async () => {
   setupPanels();
   setupDelete();
   setupDashboardLogout();
+  setupFavoriteUpdates();
 
   if (!isConfigured()) {
     const notConnected = {
@@ -374,6 +428,7 @@ onReady(async () => {
     };
     renderState(qs("[data-recent-list]"), notConnected);
     renderState(qs("[data-owner-list]"), notConnected);
+    setDashboardLoading(false);
     return;
   }
 
@@ -383,6 +438,7 @@ onReady(async () => {
   const profile = await getUserProfile(user.uid);
   const role = normalizeRole(profile?.role);
   setSidebarRole(role);
+  setDashboardLoading(true);
   fillUserCard(user, profile);
 
   if (role === "buyer") {

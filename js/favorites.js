@@ -106,15 +106,25 @@ export function bindFavoriteButtons(scope = document, favoriteIds = new Set()) {
     setFavoriteButtonState(button, isFavorite);
 
     button.onclick = async () => {
-      const next = await toggleFavorite(propertyId);
-      if (next === null) return;
+      if (button.disabled) return;
+      button.disabled = true;
+      button.setAttribute("aria-busy", "true");
+      button.innerHTML = '<span class="spinner" aria-hidden="true"></span>';
 
-      const hasFavorite = next === true;
-      favoriteIds[hasFavorite ? "add" : "delete"](propertyId);
-      setFavoriteButtonState(button, hasFavorite);
-      window.dispatchEvent(new CustomEvent("favorites:updated", {
-        detail: { propertyId, isFavorite: hasFavorite }
-      }));
+      try {
+        const next = await toggleFavorite(propertyId);
+        if (next === null) return;
+
+        const hasFavorite = next === true;
+        favoriteIds[hasFavorite ? "add" : "delete"](propertyId);
+        setFavoriteButtonState(button, hasFavorite);
+        window.dispatchEvent(new CustomEvent("favorites:updated", {
+          detail: { propertyId, isFavorite: hasFavorite }
+        }));
+      } finally {
+        button.disabled = false;
+        button.removeAttribute("aria-busy");
+      }
     };
   });
 }
@@ -177,9 +187,23 @@ export async function loadFavoritesPage() {
 }
 
 if (typeof window !== "undefined") {
-  window.addEventListener("favorites:updated", () => {
+  window.addEventListener("favorites:updated", (event) => {
     const page = window.location.pathname.split("/").pop();
     if (page === "favorites.html") {
+      const propertyId = event.detail?.propertyId;
+      const isFavorite = event.detail?.isFavorite;
+      const container = qs("[data-favorites-list]");
+      const count = qs("[data-result-count]");
+      const button = propertyId && container?.querySelector(`[data-favorite-toggle="${CSS.escape(propertyId)}"]`);
+
+      if (container && isFavorite === false && button) {
+        button.closest(".property-card")?.remove();
+        const remaining = container.querySelectorAll(".property-card").length;
+        if (count) count.textContent = `${remaining} favorite${remaining === 1 ? "" : "s"}`;
+        if (!remaining) loadFavoritesPage();
+        return;
+      }
+
       loadFavoritesPage();
     }
   });

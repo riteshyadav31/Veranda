@@ -199,6 +199,21 @@
             novalidate
           >
 
+            <div class="field auth-role-field">
+              <span class="field__label">Create account as</span>
+              <div class="role-picker" role="group" aria-label="Sign up role">
+                <button class="role-option is-active" type="button" data-role-choice="buyer" data-role-target="register" aria-pressed="true">
+                  <strong>Buyer</strong>
+                  <small>Find your next home</small>
+                </button>
+                <button class="role-option" type="button" data-role-choice="seller" data-role-target="register" aria-pressed="false">
+                  <strong>Seller</strong>
+                  <small>Publish properties</small>
+                </button>
+              </div>
+              <input type="hidden" name="role" value="buyer" />
+            </div>
+
             <div class="field">
 
               <label for="reg-name">
@@ -246,14 +261,6 @@
                 autocomplete="tel"
               />
 
-            </div>
-
-            <div class="field">
-              <label for="reg-role">Role</label>
-              <select id="reg-role" name="role">
-                <option value="buyer" selected>Buyer</option>
-                <option value="seller">Seller</option>
-              </select>
             </div>
 
             <div class="field">

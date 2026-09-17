@@ -129,7 +129,8 @@ service cloud.firestore {
         && request.resource.data.updatedAt is timestamp
       );
 
-      allow delete: if false;
+      allow delete: if isSignedIn()
+        && resource.data.buyerId == request.auth.uid;
     }
   }
 }

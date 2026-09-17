@@ -1147,6 +1147,42 @@ ol[class] { list-style: none; padding: 0; }
 
 .auth-form { display: grid; gap: var(--sp-5); }
 .auth-form[hidden] { display: none; }
+.field__label {
+  font-size: var(--step--1);
+  font-weight: 600;
+  color: var(--muted);
+}
+.role-picker {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-2);
+  padding: 0.3rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--paper);
+}
+.role-option {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.7rem 0.75rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color var(--fast), border-color var(--fast), color var(--fast), box-shadow var(--fast);
+}
+.role-option strong { color: inherit; font-family: var(--font-display); }
+.role-option small { font-size: 0.75rem; color: inherit; }
+.role-option:hover { color: var(--ink); }
+.role-option.is-active {
+  border-color: var(--line);
+  background: var(--card);
+  color: var(--ink);
+  box-shadow: var(--shadow-sm);
+}
 
 .form-row-split {
   display: flex;
