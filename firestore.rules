@@ -1,0 +1,135 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isBuyer() {
+      return isSignedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'buyer';
+    }
+
+    function isSeller() {
+      return isSignedIn() && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'seller';
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function validUserDoc(userId) {
+      return request.resource.data.uid == userId
+        && request.resource.data.name is string
+        && request.resource.data.email is string
+        && request.resource.data.phone is string
+        && request.resource.data.role in ['buyer', 'seller']
+        && request.resource.data.createdAt is timestamp
+        && request.resource.data.uid == request.auth.uid;
+    }
+
+    match /users/{userId} {
+      allow get: if isSignedIn();
+
+      match /favorites/{propertyId} {
+        allow get, list: if request.auth != null && request.auth.uid == userId;
+        allow create: if request.auth != null
+          && request.auth.uid == userId
+          && request.resource.data.propertyId == propertyId
+          && request.resource.data.createdAt is timestamp;
+        allow delete: if request.auth != null && request.auth.uid == userId;
+        allow update: if false;
+      }
+
+      allow create: if isSignedIn()
+        && request.auth.uid == userId
+        && validUserDoc(userId)
+        && request.resource.data.role == 'buyer';
+
+      allow update: if isOwner(userId)
+        && request.resource.data.uid == userId
+        && request.resource.data.email == resource.data.email
+        && request.resource.data.role == resource.data.role
+        && request.resource.data.name is string
+        && request.resource.data.phone is string
+        && request.resource.data.createdAt == resource.data.createdAt;
+
+      allow delete: if false;
+    }
+
+    match /properties/{propertyId} {
+      allow get: if true;
+      allow list: if true;
+
+      allow create: if isSignedIn()
+        && isSeller()
+        && request.resource.data.ownerId == request.auth.uid
+        && request.resource.data.ownerName is string
+        && request.resource.data.title is string
+        && request.resource.data.location is string
+        && request.resource.data.price is number
+        && request.resource.data.propertyType is string
+        && request.resource.data.listingType in ['sale', 'rent'];
+
+      allow update: if isSignedIn()
+        && isSeller()
+        && resource.data.ownerId == request.auth.uid
+        && request.resource.data.ownerId == resource.data.ownerId
+        && request.resource.data.ownerId == request.auth.uid
+        && request.resource.data.updatedAt is timestamp;
+
+      allow delete: if isSignedIn()
+        && isSeller()
+        && resource.data.ownerId == request.auth.uid;
+    }
+
+    match /enquiries/{enquiryId} {
+      function validEnquiryCreate() {
+        return request.resource.data.propertyId is string
+          && request.resource.data.propertyTitle is string
+          && request.resource.data.buyerId == request.auth.uid
+          && request.resource.data.buyerName is string
+          && request.resource.data.buyerEmail is string
+          && request.resource.data.buyerPhone is string
+          && request.resource.data.sellerId is string
+          && request.resource.data.sellerName is string
+          && request.resource.data.message is string
+          && request.resource.data.message.trim().size() >= 10
+          && request.resource.data.message.trim().size() <= 1000
+          && request.resource.data.status == 'new'
+          && request.resource.data.createdAt is timestamp
+          && request.resource.data.updatedAt is timestamp
+          && exists(/databases/$(database)/documents/properties/$(request.resource.data.propertyId))
+          && get(/databases/$(database)/documents/properties/$(request.resource.data.propertyId)).data.ownerId == request.resource.data.sellerId
+          && request.resource.data.buyerId == request.auth.uid
+          && request.resource.data.sellerId == get(/databases/$(database)/documents/properties/$(request.resource.data.propertyId)).data.ownerId;
+      }
+
+      allow create: if isSignedIn() && validEnquiryCreate();
+
+      allow get: if isSignedIn() && (
+        resource.data.buyerId == request.auth.uid ||
+        resource.data.sellerId == request.auth.uid
+      );
+
+      allow list: if isSignedIn() && (
+        request.query.limit <= 50
+        && (
+          resource.data.buyerId == request.auth.uid ||
+          resource.data.sellerId == request.auth.uid
+        )
+      );
+
+      allow update: if isSignedIn() && (
+        resource.data.sellerId == request.auth.uid
+        && request.resource.data.buyerId == resource.data.buyerId
+        && request.resource.data.sellerId == resource.data.sellerId
+        && request.resource.data.propertyId == resource.data.propertyId
+        && request.resource.data.status in ['new', 'contacted', 'closed']
+        && request.resource.data.status != resource.data.status
+        && request.resource.data.updatedAt is timestamp
+      );
+
+      allow delete: if false;
+    }
+  }
+}

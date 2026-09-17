@@ -14,36 +14,12 @@
     />
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/responsive.css" />
+    <link rel="stylesheet" href="css/navbar.css" />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
 
-    <header class="nav" data-nav>
-      <div class="shell nav__inner">
-        <a class="brand" href="index.html">
-          <span class="brand__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11 12 4l8 7"/><path d="M6 10v10h12V10"/></svg></span>
-          Veranda
-        </a>
-
-        <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
-          <span aria-hidden="true"></span>
-        </button>
-
-        <div class="nav__drawer" id="nav-drawer">
-          <ul class="nav__links">
-            <li><a class="nav__link" href="index.html">Home</a></li>
-            <li><a class="nav__link" href="properties.html">Properties</a></li>
-            <li><a class="nav__link" href="about.html">About</a></li>
-            <li><a class="nav__link" href="contact.html">Contact</a></li>
-            <li><a class="nav__link" href="dashboard.html">Dashboard</a></li>
-          </ul>
-          <div class="nav__actions">
-            <a class="btn btn--ghost btn--sm" href="login.html">Sign in</a>
-            <a class="btn btn--primary btn--sm" href="add-property.html">List a property</a>
-          </div>
-        </div>
-      </div>
-    </header>
+    <header class="nav" data-nav></header>
 
     <main id="main">
       <section class="page-head">
@@ -61,29 +37,66 @@
           <div class="search" role="search">
             <form class="search__fields" data-filter-form>
               <div class="field">
-                <label for="filter-location">Locality or city</label>
-                <input type="search" id="filter-location" name="location" placeholder="Civil Lines, Prayagraj" />
+                <label for="filter-search">Search</label>
+                <input type="search" id="filter-search" name="search" placeholder="Title, location or description" />
               </div>
               <div class="field">
-                <label for="filter-type">Property type</label>
-                <select id="filter-type" name="type">
-                  <option value="">Any type</option>
-                  <option value="house">House</option>
-                  <option value="apartment">Apartment</option>
-                  <option value="villa">Villa</option>
-                  <option value="plot">Plot</option>
-                  <option value="commercial">Commercial</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="filter-purpose">Looking to</label>
-                <select id="filter-purpose" name="purpose">
-                  <option value="">Buy or rent</option>
-                  <option value="sale">Buy</option>
+                <label for="filter-listing-type">Listing type</label>
+                <select id="filter-listing-type" name="listingType">
+                  <option value="">All</option>
+                  <option value="sale">Sale</option>
                   <option value="rent">Rent</option>
                 </select>
               </div>
+              <div class="field">
+                <label for="filter-property-type">Property type</label>
+                <select id="filter-property-type" name="propertyType">
+                  <option value="">All</option>
+                  <option value="apartment">Apartment</option>
+                  <option value="house">House</option>
+                  <option value="villa">Villa</option>
+                  <option value="plot">Plot</option>
+                  <option value="commercial">Commercial</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="filter-min-price">Minimum price</label>
+                <input type="number" id="filter-min-price" name="minPrice" min="0" placeholder="0" />
+              </div>
+              <div class="field">
+                <label for="filter-max-price">Maximum price</label>
+                <input type="number" id="filter-max-price" name="maxPrice" min="0" placeholder="No limit" />
+              </div>
+              <div class="field">
+                <label for="filter-bedrooms">Bedrooms</label>
+                <select id="filter-bedrooms" name="bedrooms">
+                  <option value="">Any</option>
+                  <option value="1">1+</option>
+                  <option value="2">2+</option>
+                  <option value="3">3+</option>
+                  <option value="4">4+</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="filter-bathrooms">Bathrooms</label>
+                <select id="filter-bathrooms" name="bathrooms">
+                  <option value="">Any</option>
+                  <option value="1">1+</option>
+                  <option value="2">2+</option>
+                  <option value="3">3+</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="filter-min-area">Minimum area</label>
+                <input type="number" id="filter-min-area" name="minArea" min="0" placeholder="sq ft" />
+              </div>
+              <div class="field">
+                <label for="filter-max-area">Maximum area</label>
+                <input type="number" id="filter-max-area" name="maxArea" min="0" placeholder="No limit" />
+              </div>
               <button class="btn btn--primary" type="submit">Apply filters</button>
+              <button class="btn btn--ghost" type="reset">Clear filters</button>
             </form>
           </div>
 
@@ -92,10 +105,12 @@
             <div class="toolbar__sort">
               <label for="sort-by">Sort by</label>
               <select id="sort-by" name="sort" data-sort>
-                <option value="recent">Newest first</option>
+                <option value="newest">Newest</option>
+                <option value="oldest">Oldest</option>
                 <option value="price-asc">Price: low to high</option>
                 <option value="price-desc">Price: high to low</option>
-                <option value="area">Largest area</option>
+                <option value="area-asc">Area: low to high</option>
+                <option value="area-desc">Area: high to low</option>
               </select>
             </div>
           </div>

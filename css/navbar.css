@@ -1,0 +1,85 @@
+/* Centralized navbar additions. Base layout remains in style.css. */
+.nav__account {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.nav__avatar {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line-strong);
+  border-radius: 50%;
+  background: var(--green);
+  color: #fff;
+  font-family: var(--font-display);
+  font-size: var(--step--1);
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform var(--fast), background-color var(--fast), border-color var(--fast);
+}
+
+.nav__avatar:hover,
+.nav__avatar:focus-visible {
+  background: var(--green-dark);
+  border-color: var(--green-dark);
+  transform: translateY(-1px);
+}
+
+.nav__account-menu {
+  position: absolute;
+  z-index: 110;
+  top: calc(100% + 0.75rem);
+  right: 0;
+  min-width: 170px;
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+
+.nav__account-menu[hidden] { display: none; }
+.nav__account-menu a,
+.nav__account-menu button {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 0.7rem;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.nav__account-menu a:hover,
+.nav__account-menu button:hover { background: var(--paper); color: var(--ink); }
+.nav__account-name {
+  padding: 0.45rem 0.7rem 0.55rem;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  font-size: var(--step--1);
+  font-weight: 700;
+}
+
+.nav__back {
+  margin-left: auto;
+  color: var(--text);
+  font-weight: 600;
+}
+.nav__back:hover { color: var(--green); }
+
+@media (max-width: 900px) {
+  .nav__account-menu {
+    position: static;
+    margin-top: 0.5rem;
+    box-shadow: none;
+  }
+  .nav__account { display: block; }
+  .nav__avatar { width: 42px; height: 42px; }
+}

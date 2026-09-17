@@ -14,36 +14,12 @@
     />
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/responsive.css" />
+    <link rel="stylesheet" href="css/navbar.css" />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
 
-    <header class="nav" data-nav>
-      <div class="shell nav__inner">
-        <a class="brand" href="index.html">
-          <span class="brand__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11 12 4l8 7"/><path d="M6 10v10h12V10"/></svg></span>
-          Veranda
-        </a>
-
-        <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
-          <span aria-hidden="true"></span>
-        </button>
-
-        <div class="nav__drawer" id="nav-drawer">
-          <ul class="nav__links">
-            <li><a class="nav__link" href="index.html">Home</a></li>
-            <li><a class="nav__link" href="properties.html">Properties</a></li>
-            <li><a class="nav__link" href="about.html">About</a></li>
-            <li><a class="nav__link" href="contact.html">Contact</a></li>
-            <li><a class="nav__link" href="dashboard.html">Dashboard</a></li>
-          </ul>
-          <div class="nav__actions">
-            <a class="btn btn--ghost btn--sm" href="login.html">Sign in</a>
-            <a class="btn btn--primary btn--sm" href="add-property.html">List a property</a>
-          </div>
-        </div>
-      </div>
-    </header>
+    <header class="nav" data-nav></header>
 
     <main id="main">
       <div class="shell dash">
@@ -53,13 +29,19 @@
             <span>
               <strong data-user-name>Signed-out visitor</strong>
               <span data-user-email>Sign in to load your account</span>
+              <span data-user-phone>Phone: not added</span>
+              <span data-user-role>Role: buyer</span>
+              <span data-user-account>Account: not loaded</span>
             </span>
           </div>
           <nav class="dash__menu" aria-label="Dashboard sections">
             <a class="is-active" href="#overview" data-dash-link="overview">Overview</a>
-            <a href="#listings" data-dash-link="listings">My listings</a>
-            <a href="#enquiries" data-dash-link="enquiries">Enquiries</a>
+            <a href="#listings" data-dash-link="listings" data-seller-only>My Listings</a>
+            <a href="my-enquiries.html" data-buyer-only>My Enquiries</a>
+            <a href="enquiries.html" data-seller-only>My Enquiries</a>
+            <a href="favorites.html">Favorites</a>
             <a href="#profile" data-dash-link="profile">Profile</a>
+            <button type="button" data-dashboard-logout>Logout</button>
           </nav>
         </aside>
 
@@ -77,13 +59,21 @@
               <div class="stat"><span>Total listings</span><strong data-stat-total>0</strong></div>
               <div class="stat"><span>For sale</span><strong data-stat-sale>0</strong></div>
               <div class="stat"><span>For rent</span><strong data-stat-rent>0</strong></div>
+              <div class="stat"><span>Favorites</span><strong data-stat-favorites>0</strong></div>
+              <div class="stat"><span>Total enquiries</span><strong data-stat-enquiries-total>0</strong></div>
+              <div class="stat"><span>New enquiries</span><strong data-stat-enquiries-new>0</strong></div>
+              <div class="stat"><span>Contacted</span><strong data-stat-enquiries-contacted>0</strong></div>
+              <div class="stat"><span>Closed</span><strong data-stat-enquiries-closed>0</strong></div>
               <div class="stat"><span>Last updated</span><strong data-stat-updated>&mdash;</strong></div>
             </div>
 
             <div class="panel">
               <div class="section-head" style="margin-bottom: 1.25rem">
                 <h3>Recent listings</h3>
-                <a class="btn btn--ghost btn--sm" href="#listings" data-dash-link="listings">See all</a>
+                <div style="display:flex; gap: 0.5rem; flex-wrap: wrap;">
+                  <a class="btn btn--ghost btn--sm" href="#listings" data-dash-link="listings">See all</a>
+                  <a class="btn btn--ghost btn--sm" href="favorites.html">View favorites</a>
+                </div>
               </div>
               <div class="dash-list" data-recent-list></div>
             </div>
@@ -95,7 +85,6 @@
                 <h1>My listings</h1>
                 <p>Edit pricing, swap photos or take a property off the market.</p>
               </div>
-              <a class="btn btn--primary" href="add-property.html">List a property</a>
             </div>
             <div class="panel">
               <div class="dash-list" data-owner-list></div>

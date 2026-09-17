@@ -1,7 +1,9 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
-import { getAuth } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
-import { getFirestore } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
-import { getStorage } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-storage.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-auth.js";
+import { getFirestore } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
+
+// Cloudinary use karenge, isliye Firebase Storage abhi required nahi hai.
+// import { getStorage } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-storage.js";
 
 
 export const firebaseConfig = {
@@ -14,21 +16,31 @@ export const firebaseConfig = {
   measurementId: "G-Q6J1Q1QR86"
 };
 
-/** Collection and storage paths used across the app. */
+
+/* Firestore collection names */
 export const DB = {
   properties: "properties",
   users: "users",
-  enquiries: "enquiries",
-  imagesPath: "property-images"
+  enquiries: "enquiries"
 };
 
-/** True once real credentials have been filled in above. */
+
+/* Check Firebase configuration */
 export function isConfigured() {
-  return Boolean(firebaseConfig.apiKey && firebaseConfig.projectId);
+  return Boolean(
+    firebaseConfig.apiKey &&
+    firebaseConfig.projectId
+  );
 }
 
+
+/* Initialize Firebase */
 const app = initializeApp(firebaseConfig);
 
+
+/* Firebase Authentication */
 export const auth = getAuth(app);
+
+
+/* Cloud Firestore */
 export const db = getFirestore(app);
-export const storage = getStorage(app);

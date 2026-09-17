@@ -1,158 +1,476 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Sign in or create a Veranda account to list and manage properties." />
-    <title>Sign in — Veranda</title>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Karla:ital,wght@0,400;0,500;0,600;1,400&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="css/responsive.css" />
-  </head>
-  <body>
-    <a class="skip-link" href="#main">Skip to content</a>
+<head>
+  <meta charset="utf-8" />
 
-    <header class="nav" data-nav>
-      <div class="shell nav__inner">
-        <a class="brand" href="index.html">
-          <span class="brand__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11 12 4l8 7"/><path d="M6 10v10h12V10"/></svg></span>
-          Veranda
-        </a>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  />
 
-        <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
-          <span aria-hidden="true"></span>
-        </button>
+  <meta
+    name="description"
+    content="Sign in or create a Veranda account to list and manage properties."
+  />
 
-        <div class="nav__drawer" id="nav-drawer">
-          <ul class="nav__links">
-            <li><a class="nav__link" href="index.html">Home</a></li>
-            <li><a class="nav__link" href="properties.html">Properties</a></li>
-            <li><a class="nav__link" href="about.html">About</a></li>
-            <li><a class="nav__link" href="contact.html">Contact</a></li>
-            <li><a class="nav__link" href="dashboard.html">Dashboard</a></li>
+  <title>Sign in — Veranda</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link
+    rel="preconnect"
+    href="https://fonts.gstatic.com"
+    crossorigin
+  />
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Karla:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+  <link rel="stylesheet" href="css/navbar.css" />
+</head>
+
+
+<body>
+
+  <a class="skip-link" href="#main">
+    Skip to content
+  </a>
+
+
+  <header class="nav nav--auth" data-nav></header>
+
+
+  <!-- MAIN -->
+
+  <main id="main">
+
+    <section class="section section--tight">
+
+      <div class="shell auth">
+
+
+        <!-- LEFT CONTENT -->
+
+        <div class="auth__pitch">
+
+          <h1>
+            One account for every listing you own.
+          </h1>
+
+          <ul>
+
+            <li>
+              Publish a property and edit it whenever the price changes.
+            </li>
+
+            <li>
+              Read enquiries in your dashboard instead of chasing calls.
+            </li>
+
+            <li>
+              Save the homes you like and compare them side by side.
+            </li>
+
           </ul>
-          <div class="nav__actions">
-            <a class="btn btn--ghost btn--sm" href="login.html">Sign in</a>
-            <a class="btn btn--primary btn--sm" href="add-property.html">List a property</a>
-          </div>
+
         </div>
-      </div>
-    </header>
 
-    <main id="main">
-      <section class="section section--tight">
-        <div class="shell auth">
-          <div class="auth__pitch">
-            <h1>One account for every listing you own.</h1>
-            <ul>
-              <li>Publish a property and edit it whenever the price changes.</li>
-              <li>Read enquiries in your dashboard instead of chasing calls.</li>
-              <li>Save the homes you like and compare them side by side.</li>
-            </ul>
+
+        <!-- AUTH CARD -->
+
+        <div class="form-card">
+
+
+          <!-- TABS -->
+
+          <div
+            class="auth-tabs"
+            role="tablist"
+            aria-label="Sign in or register"
+          >
+
+            <button
+              class="auth-tab is-active"
+              type="button"
+              role="tab"
+              aria-selected="true"
+              data-auth-tab="login"
+            >
+              Sign in
+            </button>
+
+            <button
+              class="auth-tab"
+              type="button"
+              role="tab"
+              aria-selected="false"
+              data-auth-tab="register"
+            >
+              Create account
+            </button>
+
           </div>
 
-          <div class="form-card">
-            <div class="auth-tabs" role="tablist" aria-label="Sign in or register">
-              <button class="auth-tab is-active" type="button" role="tab" aria-selected="true" data-auth-tab="login">Sign in</button>
-              <button class="auth-tab" type="button" role="tab" aria-selected="false" data-auth-tab="register">Create account</button>
+
+          <!-- LOGIN FORM -->
+
+          <form
+            class="auth-form"
+            data-auth-panel="login"
+            data-auth-form="login"
+            novalidate
+          >
+
+            <div class="field">
+
+              <label for="login-email">
+                Email
+              </label>
+
+              <input
+                type="email"
+                id="login-email"
+                name="email"
+                autocomplete="email"
+                required
+              />
+
             </div>
 
-            <form class="auth-form" data-auth-panel="login" data-auth-form novalidate>
-              <div class="field">
-                <label for="login-email">Email</label>
-                <input type="email" id="login-email" name="email" autocomplete="email" required />
-              </div>
-              <div class="field">
-                <label for="login-password">Password</label>
-                <input type="password" id="login-password" name="password" autocomplete="current-password" required />
-              </div>
-              <div class="form-row-split">
-                <label class="checkbox"><input type="checkbox" name="remember" /> Keep me signed in</label>
-                <a href="contact.html">Forgot password?</a>
-              </div>
-              <button class="btn btn--primary btn--block" type="submit">Sign in</button>
-            </form>
 
-            <form class="auth-form" data-auth-panel="register" data-auth-form hidden novalidate>
-              <div class="field">
-                <label for="reg-name">Full name</label>
-                <input type="text" id="reg-name" name="name" autocomplete="name" required />
-              </div>
-              <div class="field">
-                <label for="reg-email">Email</label>
-                <input type="email" id="reg-email" name="email" autocomplete="email" required />
-              </div>
-              <div class="field">
-                <label for="reg-phone">Phone</label>
-                <input type="tel" id="reg-phone" name="phone" autocomplete="tel" />
-              </div>
-              <div class="field">
-                <label for="reg-password">Password</label>
-                <input type="password" id="reg-password" name="password" autocomplete="new-password" minlength="8" required />
-                <p class="field__hint">At least 8 characters.</p>
-              </div>
-              <button class="btn btn--primary btn--block" type="submit">Create account</button>
-            </form>
+            <div class="field">
 
-            <p class="divider">Accounts open in the next step</p>
-            <p class="field__hint" data-auth-status>Firebase Authentication is not connected yet.</p>
-          </div>
+              <label for="login-password">
+                Password
+              </label>
+
+              <input
+                type="password"
+                id="login-password"
+                name="password"
+                autocomplete="current-password"
+                required
+              />
+
+            </div>
+
+
+            <div class="form-row-split">
+
+              <label class="checkbox">
+
+                <input
+                  type="checkbox"
+                  name="remember"
+                />
+
+                Keep me signed in
+
+              </label>
+
+              <a href="contact.html">
+                Forgot password?
+              </a>
+
+            </div>
+
+
+            <button
+              class="btn btn--primary btn--block"
+              type="submit"
+            >
+              Sign in
+            </button>
+
+          </form>
+
+
+          <!-- REGISTER FORM -->
+
+          <form
+            class="auth-form"
+            data-auth-panel="register"
+            data-auth-form="register"
+            hidden
+            novalidate
+          >
+
+            <div class="field">
+
+              <label for="reg-name">
+                Full name
+              </label>
+
+              <input
+                type="text"
+                id="reg-name"
+                name="name"
+                autocomplete="name"
+                required
+              />
+
+            </div>
+
+
+            <div class="field">
+
+              <label for="reg-email">
+                Email
+              </label>
+
+              <input
+                type="email"
+                id="reg-email"
+                name="email"
+                autocomplete="email"
+                required
+              />
+
+            </div>
+
+
+            <div class="field">
+
+              <label for="reg-phone">
+                Phone
+              </label>
+
+              <input
+                type="tel"
+                id="reg-phone"
+                name="phone"
+                autocomplete="tel"
+              />
+
+            </div>
+
+            <div class="field">
+              <label for="reg-role">Role</label>
+              <select id="reg-role" name="role">
+                <option value="buyer" selected>Buyer</option>
+                <option value="seller">Seller</option>
+              </select>
+            </div>
+
+            <div class="field">
+
+              <label for="reg-password">
+                Password
+              </label>
+
+              <input
+                type="password"
+                id="reg-password"
+                name="password"
+                autocomplete="new-password"
+                minlength="8"
+                required
+              />
+
+              <p class="field__hint">
+                At least 8 characters.
+              </p>
+
+            </div>
+
+
+            <button
+              class="btn btn--primary btn--block"
+              type="submit"
+            >
+              Create account
+            </button>
+
+          </form>
+
+
+          <!-- STATUS -->
+
+          <p class="divider">
+            Account authentication
+          </p>
+
+          <p
+            class="field__hint"
+            data-auth-status
+          >
+            Firebase Authentication is ready.
+          </p>
+
         </div>
-      </section>
-    </main>
 
-    <footer class="footer">
-      <div class="shell">
-        <div class="footer__grid">
-          <div class="footer__about">
-            <a class="brand" href="index.html">
-              <span class="brand__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11 12 4l8 7"/><path d="M6 10v10h12V10"/></svg></span>
-              Veranda
-            </a>
-            <p>Homes, plots and commercial space across Uttar Pradesh, listed by owners and verified agents.</p>
-          </div>
-
-          <div class="footer__col">
-            <h4>Browse</h4>
-            <ul>
-              <li><a href="properties.html?type=apartment">Apartments</a></li>
-              <li><a href="properties.html?type=villa">Villas</a></li>
-              <li><a href="properties.html?type=plot">Plots</a></li>
-              <li><a href="properties.html?purpose=rent">Rentals</a></li>
-            </ul>
-          </div>
-
-          <div class="footer__col">
-            <h4>Sell or rent</h4>
-            <ul>
-              <li><a href="add-property.html">List a property</a></li>
-              <li><a href="dashboard.html">Manage listings</a></li>
-              <li><a href="login.html">Sign in</a></li>
-            </ul>
-          </div>
-
-          <div class="footer__col">
-            <h4>Company</h4>
-            <ul>
-              <li><a href="about.html">About us</a></li>
-              <li><a href="contact.html">Contact</a></li>
-              <li><a href="contact.html#offices">Offices</a></li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="footer__base">
-          <p>&copy; <span data-year>2026</span> Veranda Estates. All rights reserved.</p>
-          <p>Prayagraj &middot; Lucknow &middot; Varanasi</p>
-        </div>
       </div>
-    </footer>
-    <script type="module" src="js/auth.js"></script>
-  </body>
+
+    </section>
+
+  </main>
+
+
+  <!-- FOOTER -->
+
+  <footer class="footer">
+
+    <div class="shell">
+
+      <div class="footer__grid">
+
+
+        <div class="footer__about">
+
+          <a class="brand" href="index.html">
+
+            <span
+              class="brand__mark"
+              aria-hidden="true"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M4 11 12 4l8 7" />
+                <path d="M6 10v10h12V10" />
+              </svg>
+            </span>
+
+            Veranda
+
+          </a>
+
+          <p>
+            Homes, plots and commercial space across Uttar Pradesh,
+            listed by owners and verified agents.
+          </p>
+
+        </div>
+
+
+        <div class="footer__col">
+
+          <h4>Browse</h4>
+
+          <ul>
+
+            <li>
+              <a href="properties.html?propertyType=apartment">
+                Apartments
+              </a>
+            </li>
+
+            <li>
+              <a href="properties.html?propertyType=villa">
+                Villas
+              </a>
+            </li>
+
+            <li>
+              <a href="properties.html?propertyType=plot">
+                Plots
+              </a>
+            </li>
+
+            <li>
+              <a href="properties.html?listingType=rent">
+                Rentals
+              </a>
+            </li>
+
+          </ul>
+
+        </div>
+
+
+        <div class="footer__col">
+
+          <h4>Sell or rent</h4>
+
+          <ul>
+
+            <li>
+              <a href="add-property.html">
+                List a property
+              </a>
+            </li>
+
+            <li>
+              <a href="dashboard.html">
+                Manage listings
+              </a>
+            </li>
+
+            <li>
+              <a href="login.html">
+                Sign in
+              </a>
+            </li>
+
+          </ul>
+
+        </div>
+
+
+        <div class="footer__col">
+
+          <h4>Company</h4>
+
+          <ul>
+
+            <li>
+              <a href="about.html">
+                About us
+              </a>
+            </li>
+
+            <li>
+              <a href="contact.html">
+                Contact
+              </a>
+            </li>
+
+            <li>
+              <a href="contact.html#offices">
+                Offices
+              </a>
+            </li>
+
+          </ul>
+
+        </div>
+
+      </div>
+
+
+      <div class="footer__base">
+
+        <p>
+          &copy;
+          <span data-year>2026</span>
+          Veranda Estates. All rights reserved.
+        </p>
+
+        <p>
+          Prayagraj &middot; Lucknow &middot; Varanasi
+        </p>
+
+      </div>
+
+    </div>
+
+  </footer>
+
+
+  <!-- AUTH JS -->
+
+  <script type="module" src="js/auth.js"></script>
+  <script type="module" src="js/navbar.js"></script>
+
+</body>
+
 </html>

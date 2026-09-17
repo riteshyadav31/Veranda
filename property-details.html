@@ -14,36 +14,12 @@
     />
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/responsive.css" />
+    <link rel="stylesheet" href="css/navbar.css" />
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
 
-    <header class="nav" data-nav>
-      <div class="shell nav__inner">
-        <a class="brand" href="index.html">
-          <span class="brand__mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 11 12 4l8 7"/><path d="M6 10v10h12V10"/></svg></span>
-          Veranda
-        </a>
-
-        <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="nav-drawer" aria-label="Open menu">
-          <span aria-hidden="true"></span>
-        </button>
-
-        <div class="nav__drawer" id="nav-drawer">
-          <ul class="nav__links">
-            <li><a class="nav__link" href="index.html">Home</a></li>
-            <li><a class="nav__link" href="properties.html">Properties</a></li>
-            <li><a class="nav__link" href="about.html">About</a></li>
-            <li><a class="nav__link" href="contact.html">Contact</a></li>
-            <li><a class="nav__link" href="dashboard.html">Dashboard</a></li>
-          </ul>
-          <div class="nav__actions">
-            <a class="btn btn--ghost btn--sm" href="login.html">Sign in</a>
-            <a class="btn btn--primary btn--sm" href="add-property.html">List a property</a>
-          </div>
-        </div>
-      </div>
-    </header>
+    <header class="nav" data-nav></header>
 
     <main id="main">
       <section class="page-head">
@@ -125,6 +101,40 @@
                 <p class="field__hint" data-contact-note style="margin-top: 0.75rem">
                   The number is revealed when you tap the button.
                 </p>
+
+                <p style="margin-top: 1.25rem">
+                  <button class="btn btn--ghost btn--block" type="button" data-property-favorite>♡ Save to favorites</button>
+                </p>
+
+                <div class="panel" style="margin-top: 1.25rem;">
+                  <h3>Contact Seller</h3>
+                  <div data-enquiry-auth-warning hidden>
+                    <p class="field__hint">Please login to contact the seller.</p>
+                    <p style="margin-top: 0.75rem"><a class="btn btn--primary btn--block" href="login.html?next=property-details.html">Login</a></p>
+                  </div>
+
+                  <form class="form-grid" data-enquiry-form hidden>
+                    <div class="field field--full">
+                      <label for="buyer-name">Name</label>
+                      <input type="text" id="buyer-name" name="buyerName" readonly />
+                    </div>
+                    <div class="field field--full">
+                      <label for="buyer-email">Email</label>
+                      <input type="email" id="buyer-email" name="buyerEmail" readonly />
+                    </div>
+                    <div class="field field--full">
+                      <label for="buyer-phone">Phone</label>
+                      <input type="tel" id="buyer-phone" name="buyerPhone" readonly />
+                    </div>
+                    <div class="field field--full">
+                      <label for="buyer-message">Message</label>
+                      <textarea id="buyer-message" name="message" rows="5" placeholder="Tell the seller why you are interested and when you would like to view the property." required></textarea>
+                    </div>
+                    <div class="field field--full">
+                      <button class="btn btn--primary btn--block" type="submit" data-enquiry-submit>Send Enquiry</button>
+                    </div>
+                  </form>
+                </div>
 
                 <p style="margin-top: 1.25rem">
                   <a class="btn btn--ghost btn--block" href="properties.html">Back to all listings</a>

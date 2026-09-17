@@ -187,5 +187,13 @@
   }
   .dash-item__media { width: 76px; height: 62px; }
   .dash-item__actions { grid-column: 1 / -1; justify-content: flex-start; }
+  .enquiry-list .dash-item {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .enquiry-list .enquiry-item__actions {
+    grid-column: auto;
+    align-items: flex-start;
+  }
+  .enquiry-list .enquiry-item__buttons { justify-content: flex-start; }
   .photo-grid { grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); }
 }

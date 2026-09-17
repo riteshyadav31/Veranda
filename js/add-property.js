@@ -2,8 +2,6 @@
  * add-property.js — add-property.html
  * Creates a document in the `properties` collection, and updates an existing
  * one when the page is opened as add-property.html?id=PROPERTY_ID.
- *
- * Ownership always comes from auth.currentUser.uid, never from the form.
  */
 
 import {
@@ -16,7 +14,8 @@ import {
 } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
 import { auth, db, DB } from "./firebase-config.js";
-import { guardPage, getUserProfile, describeError } from "./auth.js";
+import { guardPage, getUserProfile, describeError, normalizeRole } from "./auth.js";
+import { cloudinaryConfig, isCloudinaryConfigured } from "./cloudinary-config.js";
 import "./navbar.js";
 import {
   qs,
@@ -29,88 +28,134 @@ import {
   AMENITIES
 } from "./utils.js";
 
-const MAX_IMAGES = 8;
+const MAX_IMAGES = 5;
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024;
+const ALLOWED_TYPES = new Set(["image/jpeg", "image/jpg", "image/png", "image/webp"]);
 let editingId = null;
+let previewItems = [];
 
-/* -------------------------------------------------------------------------
-   Form scaffolding
-   ------------------------------------------------------------------------- */
-
-/** Build the amenity checkboxes from the shared list. */
 function renderAmenities(selected = []) {
   const host = qs("[data-amenities]");
   if (!host) return;
-  host.innerHTML = AMENITIES.map(
-    (name) => `
-      <label class="checkbox">
-        <input type="checkbox" name="amenities" value="${escapeHtml(name)}"${
-          selected.includes(name) ? " checked" : ""
-        } />
-        ${escapeHtml(name)}
-      </label>`
-  ).join("");
+
+  host.innerHTML = AMENITIES.map((name) => `
+    <label class="checkbox">
+      <input type="checkbox" name="amenities" value="${escapeHtml(name)}"${selected.includes(name) ? " checked" : ""} />
+      ${escapeHtml(name)}
+    </label>
+  `).join("");
 }
 
-/** One image URL row. */
-function imageRow(value = "") {
-  const row = document.createElement("div");
-  row.className = "repeater__row";
-  row.innerHTML = `
-    <input type="url" name="images" placeholder="https://example.com/photo.jpg" value="${escapeHtml(value)}" />
-    <button class="repeater__remove" type="button" data-remove-image aria-label="Remove this image">&times;</button>`;
-  return row;
-}
+function renderPreview() {
+  const host = qs("[data-photo-grid]");
+  const status = qs("[data-upload-status]");
+  const errors = qs("[data-image-errors]");
 
-function renderImageRows(urls = []) {
-  const host = qs("[data-image-rows]");
   if (!host) return;
   host.innerHTML = "";
-  const list = urls.length ? urls : [""];
-  list.slice(0, MAX_IMAGES).forEach((url) => host.appendChild(imageRow(url)));
+
+  if (!previewItems.length) {
+    if (status) status.textContent = "No photos selected yet.";
+    return;
+  }
+
+  previewItems.forEach((item, index) => {
+    const card = document.createElement("div");
+    card.className = "photo-grid__item";
+
+    const previewUrl = item.type === "upload" ? URL.createObjectURL(item.value) : item.value;
+    card.innerHTML = `
+      <img src="${escapeHtml(previewUrl)}" alt="Property preview ${index + 1}" loading="lazy" />
+      <button type="button" class="btn btn--ghost btn--sm" data-remove-preview="${index}">Remove</button>
+    `;
+    host.appendChild(card);
+  });
+
+  if (status) status.textContent = `${previewItems.length} photo${previewItems.length === 1 ? "" : "s"} selected`;
+  if (errors) {
+    errors.hidden = true;
+    errors.textContent = "";
+  }
 }
 
-function setupImageRepeater() {
-  const host = qs("[data-image-rows]");
-  const addButton = qs("[data-add-image]");
-  if (!host || !addButton) return;
+function addPreviewFiles(files) {
+  const form = qs("[data-property-form]");
+  const fileList = Array.from(files || []);
+  if (!fileList.length) return;
 
-  addButton.addEventListener("click", () => {
-    if (qsa(".repeater__row", host).length >= MAX_IMAGES) {
-      showToast(`You can add up to ${MAX_IMAGES} images.`, "error");
+  const remainingSlots = MAX_IMAGES - previewItems.length;
+  if (remainingSlots <= 0) {
+    if (form) showAlert(form, `You can add up to ${MAX_IMAGES} photos.`, "error");
+    return;
+  }
+
+  const validFiles = [];
+  const invalidFiles = [];
+
+  fileList.forEach((file) => {
+    if (!ALLOWED_TYPES.has(file.type)) {
+      invalidFiles.push(`${file.name} is not a supported image type.`);
       return;
     }
-    host.appendChild(imageRow());
+
+    if (file.size > MAX_IMAGE_SIZE) {
+      invalidFiles.push(`${file.name} must be 5 MB or smaller.`);
+      return;
+    }
+
+    validFiles.push(file);
+  });
+
+  if (invalidFiles.length) {
+    const errorBox = qs("[data-image-errors]");
+    if (errorBox) {
+      errorBox.textContent = invalidFiles.join(" ");
+      errorBox.hidden = false;
+    }
+  }
+
+  const accepted = validFiles.slice(0, remainingSlots);
+  if (accepted.length) {
+    accepted.forEach((file) => previewItems.push({ type: "upload", value: file }));
+    renderPreview();
+  }
+
+  const input = qs("[data-image-input]");
+  if (input) input.value = "";
+}
+
+function setupImagePicker() {
+  const input = qs("[data-image-input]");
+  const host = qs("[data-photo-grid]");
+  if (!input || !host) return;
+
+  input.addEventListener("change", (event) => {
+    addPreviewFiles(event.target.files);
   });
 
   host.addEventListener("click", (event) => {
-    if (!event.target.closest("[data-remove-image]")) return;
-    const rows = qsa(".repeater__row", host);
-    if (rows.length === 1) {
-      qs("input", rows[0]).value = "";
-      return;
-    }
-    event.target.closest(".repeater__row").remove();
+    const button = event.target.closest("[data-remove-preview]");
+    if (!button) return;
+    const index = Number(button.dataset.removePreview);
+    if (Number.isNaN(index)) return;
+    previewItems.splice(index, 1);
+    renderPreview();
   });
 }
 
-/** Rent listings quote a monthly figure, sales a total. */
 function setupPriceHint(form) {
   const listingType = form.elements.listingType;
   const hint = qs("[data-price-hint]", form);
   if (!listingType || !hint) return;
+
   const update = () => {
-    hint.textContent =
-      listingType.value === "rent" ? "Monthly rent." : "Total asking price.";
+    hint.textContent = listingType.value === "rent" ? "Monthly rent." : "Total asking price.";
   };
+
   listingType.addEventListener("change", update);
   update();
 }
 
-/* -------------------------------------------------------------------------
-   Reading and validating the form
-   ------------------------------------------------------------------------- */
-
-/** Collect the form into the shape stored in Firestore. */
 function readForm(form) {
   const data = new FormData(form);
   const number = (key) => {
@@ -129,16 +174,10 @@ function readForm(form) {
     bathrooms: number("bathrooms") ?? 0,
     area: number("area"),
     amenities: data.getAll("amenities").map(String),
-    images: data
-      .getAll("images")
-      .map((url) => String(url).trim())
-      .filter(Boolean)
-      .slice(0, MAX_IMAGES),
     contact: String(data.get("contact") || "").trim()
   };
 }
 
-/** Returns the first problem with the submitted values, or null. */
 function validateProperty(values) {
   if (values.title.length < 6) return "Give the listing a title of at least 6 characters.";
   if (values.description.length < 20) return "Write a description of at least 20 characters.";
@@ -148,14 +187,8 @@ function validateProperty(values) {
   if (!values.listingType) return "Choose whether this is for sale or for rent.";
   if (!Number.isFinite(values.area) || values.area <= 0) return "Enter the area in square feet.";
   if (!/^[+\d][\d\s-]{7,16}$/.test(values.contact)) return "Enter a valid contact number.";
-  if (values.images.some((url) => !/^https?:\/\//i.test(url)))
-    return "Image links must start with http:// or https://";
   return null;
 }
-
-/* -------------------------------------------------------------------------
-   UI feedback
-   ------------------------------------------------------------------------- */
 
 function showAlert(form, message, tone = "error") {
   const box = qs("[data-form-alert]", form);
@@ -190,25 +223,20 @@ function setBusy(form, busy) {
   }
 }
 
-/* -------------------------------------------------------------------------
-   Firestore writes
-   ------------------------------------------------------------------------- */
-
-/** Create a new property owned by the signed-in user. */
 export async function createProperty(values, user, ownerName) {
   const reference = await addDoc(collection(db, DB.properties), {
     ...values,
+    images: [],
     ownerId: user.uid,
     ownerName,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp()
   });
-  // Mirror the generated id into the document so reads carry it too.
+
   await updateDoc(reference, { id: reference.id });
   return reference.id;
 }
 
-/** Update a property the signed-in user owns. */
 export async function updateProperty(propertyId, values) {
   await updateDoc(doc(db, DB.properties, propertyId), {
     ...values,
@@ -217,11 +245,38 @@ export async function updateProperty(propertyId, values) {
   return propertyId;
 }
 
-/* -------------------------------------------------------------------------
-   Edit mode
-   ------------------------------------------------------------------------- */
+async function uploadSelectedImages(propertyId, ownerId, files) {
+  if (!files.length) return [];
 
-/** Put an existing property into the form. Owner check happens here too. */
+  if (!isCloudinaryConfigured()) {
+    throw new Error("Cloudinary is not configured. Set cloudName and uploadPreset in js/cloudinary-config.js.");
+  }
+
+  const urls = [];
+  const uploadUrl = `https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/image/upload`;
+
+  for (const file of files) {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", cloudinaryConfig.uploadPreset);
+    formData.append("folder", `veranda/properties/${ownerId}/${propertyId}`);
+
+    const response = await fetch(uploadUrl, {
+      method: "POST",
+      body: formData
+    });
+
+    const payload = await response.json();
+    if (!response.ok || !payload.secure_url) {
+      throw new Error(payload?.error?.message || "Image upload failed.");
+    }
+
+    urls.push(payload.secure_url);
+  }
+
+  return urls;
+}
+
 async function loadForEditing(form, propertyId, user) {
   const snapshot = await getDoc(doc(db, DB.properties, propertyId));
 
@@ -254,7 +309,8 @@ async function loadForEditing(form, propertyId, user) {
   form.elements.contact.value = property.contact || "";
 
   renderAmenities(Array.isArray(property.amenities) ? property.amenities : []);
-  renderImageRows(Array.isArray(property.images) ? property.images : []);
+  previewItems = (Array.isArray(property.images) ? property.images : []).map((url) => ({ type: "existing", value: url }));
+  renderPreview();
 
   qs("[data-form-heading]").textContent = "Edit listing";
   qs("[data-form-crumb]").textContent = "Edit listing";
@@ -265,16 +321,11 @@ async function loadForEditing(form, propertyId, user) {
   return true;
 }
 
-/* -------------------------------------------------------------------------
-   Submit
-   ------------------------------------------------------------------------- */
-
 function setupSubmit(form, ownerName) {
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     clearAlert(form);
 
-    // Ownership is re-checked at submit time, not just on page load.
     const user = auth.currentUser;
     if (!user) {
       showAlert(form, "Your session ended. Sign in again to publish.");
@@ -289,15 +340,23 @@ function setupSubmit(form, ownerName) {
       return;
     }
 
+    const existingUrls = previewItems.filter((item) => item.type === "existing").map((item) => item.value);
+    const newFiles = previewItems.filter((item) => item.type === "upload").map((item) => item.value);
+
     setBusy(form, true);
+
     try {
       if (editingId) {
-        await updateProperty(editingId, values);
+        const uploadedUrls = await uploadSelectedImages(editingId, user.uid, newFiles);
+        await updateProperty(editingId, { ...values, images: [...existingUrls, ...uploadedUrls] });
         showToast("Listing updated.");
       } else {
-        await createProperty(values, user, ownerName);
+        const propertyId = await createProperty({ ...values, images: [] }, user, ownerName);
+        const uploadedUrls = await uploadSelectedImages(propertyId, user.uid, newFiles);
+        await updateProperty(propertyId, { images: uploadedUrls });
         showToast("Listing published.");
       }
+
       window.location.href = "dashboard.html";
     } catch (error) {
       showAlert(form, describeError(error));
@@ -306,24 +365,26 @@ function setupSubmit(form, ownerName) {
   });
 }
 
-/* -------------------------------------------------------------------------
-   Start
-   ------------------------------------------------------------------------- */
-
 onReady(async () => {
   const form = qs("[data-property-form]");
   if (!form) return;
 
-  // Only signed-in owners reach the listing form.
-  const user = await guardPage();
-  if (!user) return;
+  const userGuard = await guardPage();
+  if (!userGuard) return;
 
-  const profile = await getUserProfile();
-  const ownerName = profile?.name || user.displayName || user.email || "Owner";
+  const profile = await getUserProfile(userGuard.uid);
+  const role = normalizeRole(profile?.role);
+  if (role !== "seller") {
+    window.location.replace("dashboard.html");
+    return;
+  }
+
+  const ownerName = profile?.name || userGuard.displayName || userGuard.email || "Owner";
 
   renderAmenities();
-  renderImageRows();
-  setupImageRepeater();
+  previewItems = [];
+  renderPreview();
+  setupImagePicker();
   setupPriceHint(form);
 
   editingId = getParam("id");

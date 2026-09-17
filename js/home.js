@@ -12,9 +12,10 @@ import {
   getDocs
 } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
-import { db, DB, isConfigured } from "./firebase-config.js";
+import { auth, db, DB, isConfigured } from "./firebase-config.js";
 import { describeError } from "./auth.js";
 import "./navbar.js";
+import { bindFavoriteButtons, getFavoriteIds } from "./favorites.js";
 import {
   qs,
   qsa,
@@ -66,7 +67,13 @@ function setupSearchForm() {
   form.addEventListener("submit", (event) => {
     event.preventDefault();
 
-    const params = new URLSearchParams(TAB_FILTERS[activeTab] || {});
+    const tabParams = TAB_FILTERS[activeTab] || {};
+    const params = new URLSearchParams();
+
+    Object.entries(tabParams).forEach(([key, value]) => {
+      if (value) params.set(key === "purpose" ? "listingType" : "propertyType", value);
+    });
+
     new FormData(form).forEach((value, key) => {
       const trimmed = String(value).trim();
       if (trimmed) params.set(key, trimmed);
@@ -105,9 +112,17 @@ async function loadFeatured() {
 
   try {
     const properties = await fetchFeatured();
-    renderPropertyCards(container, properties, {
+    const favoriteIds = new Set(await getFavoriteIds(auth.currentUser?.uid));
+    const visibleProperties = properties.map((property) => ({
+      ...property,
+      isFavorite: favoriteIds.has(property.id)
+    }));
+
+    renderPropertyCards(container, visibleProperties, {
       title: "No listings yet",
       message: "Once a property is published it will appear here."
+    }, {
+      onRender: (root) => bindFavoriteButtons(root, favoriteIds)
     });
   } catch (error) {
     renderState(container, {

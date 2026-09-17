@@ -3,8 +3,8 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Get in touch with the Veranda team about a listing or your account." />
-    <title>Contact — Veranda</title>
+    <meta name="description" content="Manage buyer enquiries on Veranda." />
+    <title>Enquiries — Veranda</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -25,65 +25,19 @@
       <section class="page-head">
         <div class="shell">
           <nav class="crumbs" aria-label="Breadcrumb">
-            <a href="index.html">Home</a> <span aria-hidden="true">/</span> <span>Contact</span>
+            <a href="index.html">Home</a> <span aria-hidden="true">/</span> <span>Enquiries</span>
           </nav>
-          <h1>Talk to the Veranda team</h1>
-          <p>Questions about a listing, a visit or your account &mdash; we answer within one working day.</p>
+          <h1>Buyer enquiries</h1>
+          <p>Respond to buyer interest and update the status of each request.</p>
         </div>
       </section>
 
       <section class="section section--tight">
-        <div class="shell split" id="offices">
-          <div>
-            <h2>Reach us</h2>
-            <dl class="contact-list" style="margin-top: 2rem">
-              <div>
-                <dt>Office</dt>
-                <dd>14 Sardar Patel Marg, Civil Lines, Prayagraj 211001</dd>
-              </div>
-              <div>
-                <dt>Phone</dt>
-                <dd><a href="tel:+915322500100">+91 532 250 0100</a></dd>
-              </div>
-              <div>
-                <dt>Email</dt>
-                <dd><a href="mailto:hello@veranda.example">hello@veranda.example</a></dd>
-              </div>
-              <div>
-                <dt>Open</dt>
-                <dd>Monday to Saturday, 10am &ndash; 7pm</dd>
-              </div>
-            </dl>
+        <div class="shell">
+          <div class="toolbar">
+            <p class="toolbar__count" data-result-count>Loading enquiries…</p>
           </div>
-
-          <div class="form-card">
-            <h3>Send a message</h3>
-            <form class="auth-form" style="margin-top: 1.5rem" data-contact-form>
-              <div class="field">
-                <label for="c-name">Your name</label>
-                <input type="text" id="c-name" name="name" autocomplete="name" required />
-              </div>
-              <div class="field">
-                <label for="c-email">Email</label>
-                <input type="email" id="c-email" name="email" autocomplete="email" required />
-              </div>
-              <div class="field">
-                <label for="c-subject">Subject</label>
-                <select id="c-subject" name="subject">
-                  <option value="listing">A listing on the site</option>
-                  <option value="account">My account</option>
-                  <option value="agent">Becoming a verified agent</option>
-                  <option value="other">Something else</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="c-message">Message</label>
-                <textarea id="c-message" name="message" required></textarea>
-              </div>
-              <button class="btn btn--primary btn--block" type="submit">Send message</button>
-              <p class="field__hint">Messages are connected in the next step.</p>
-            </form>
-          </div>
+          <div class="dash-list enquiry-list" data-enquiries-list></div>
         </div>
       </section>
     </main>
@@ -134,6 +88,7 @@
         </div>
       </div>
     </footer>
-    <script type="module" src="js/navbar.js"></script>
+
+    <script type="module" src="js/enquiries.js"></script>
   </body>
 </html>
