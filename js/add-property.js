@@ -389,7 +389,7 @@ onReady(async () => {
 
   editingId = getParam("id");
   if (editingId) {
-    const ready = await loadForEditing(form, editingId, user);
+    const ready = await loadForEditing(form, editingId, userGuard);
     if (!ready) return;
   }
 

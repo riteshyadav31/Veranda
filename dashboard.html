@@ -118,8 +118,8 @@
           <section data-dash-panel="profile" aria-label="Profile" hidden>
             <div class="section-head">
               <div>
-                <h1>Profile</h1>
-                <p>How buyers and tenants see you on a listing.</p>
+                <h1>Edit profile</h1>
+                <p>Update the name and phone number shown on your account.</p>
               </div>
             </div>
             <div class="panel">
@@ -133,11 +133,10 @@
                   <input type="tel" id="pr-phone" name="phone" autocomplete="tel" />
                 </div>
                 <div class="field field--full">
-                  <label for="pr-about">About you</label>
-                  <textarea id="pr-about" name="about" placeholder="Owner, agent or builder?"></textarea>
-                </div>
-                <div class="field field--full">
-                  <button class="btn btn--primary" type="submit">Save profile</button>
+                  <button class="btn btn--primary" type="submit">
+                    <span class="spinner" aria-hidden="true"></span>
+                    <span data-profile-save-label>Save profile</span>
+                  </button>
                 </div>
               </form>
             </div>

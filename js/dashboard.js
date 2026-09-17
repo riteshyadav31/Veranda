@@ -12,6 +12,7 @@ import {
   getDocs,
   deleteDoc,
   query,
+  updateDoc,
   where
 } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-firestore.js";
 
@@ -53,6 +54,8 @@ function setupPanels() {
   const panels = qsa("[data-dash-panel]");
   if (!links.length || !panels.length) return;
 
+  const initialTarget = window.location.hash.slice(1);
+
   const activate = (target) => {
     links.forEach((link) =>
       link.classList.toggle("is-active", link.dataset.dashLink === target && link.closest(".dash__menu") !== null)
@@ -71,6 +74,8 @@ function setupPanels() {
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
   });
+
+  activate(panels.some((panel) => panel.dataset.dashPanel === initialTarget) ? initialTarget : "overview");
 }
 
 function setupDashboardLogout() {
@@ -89,6 +94,49 @@ function setupDashboardLogout() {
       button.removeAttribute("aria-busy");
       button.textContent = "Logout";
       showToast(describeError(error), "error");
+    }
+  });
+}
+
+function setupProfileForm(user, profile) {
+  const form = qs("[data-profile-form]");
+  if (!form) return;
+
+  form.elements.name.value = profile?.name || user.displayName || "";
+  form.elements.phone.value = profile?.phone || user.phoneNumber || "";
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const button = qs("button[type='submit']", form);
+    const label = qs("[data-profile-save-label]", form);
+    const name = String(form.elements.name?.value || "").trim();
+    const phone = String(form.elements.phone?.value || "").trim();
+
+    if (!name) {
+      showToast("Name is required.", "error");
+      return;
+    }
+
+    if (button) {
+      button.disabled = true;
+      button.setAttribute("aria-busy", "true");
+    }
+    if (label) label.textContent = "Saving...";
+
+    try {
+      await updateDoc(doc(db, DB.users, user.uid), { name, phone });
+      profile.name = name;
+      profile.phone = phone;
+      fillUserCard(user, profile);
+      showToast("Profile updated successfully.", "success");
+    } catch (error) {
+      showToast(describeError(error), "error");
+    } finally {
+      if (button) {
+        button.disabled = false;
+        button.removeAttribute("aria-busy");
+      }
+      if (label) label.textContent = "Save profile";
     }
   });
 }
@@ -161,7 +209,6 @@ function renderBuyerDashboard(user, profile) {
   if (form) {
     form.querySelector('[name="name"]').value = profile?.name || user.displayName || "";
     form.querySelector('[name="phone"]').value = profile?.phone || "";
-    form.querySelector('[name="about"]').value = profile?.about || "";
   }
 
   const overview = qs('[data-dash-panel="overview"]');
@@ -328,7 +375,11 @@ function setupDelete() {
     try {
       await deleteProperty(propertyId);
       myProperties = myProperties.filter((item) => item.id !== propertyId);
-      renderAll();
+      renderRows(qs("[data-owner-list]"), myProperties, { withActions: true }, {
+        title: "No listings yet",
+        message: "Publish your first property and it will appear here."
+      });
+      renderStats(myProperties, 0);
       showToast("Listing deleted.");
     } catch (error) {
       button.disabled = false;
@@ -443,9 +494,11 @@ onReady(async () => {
 
   if (role === "buyer") {
     renderBuyerDashboard(user, profile);
+    setupProfileForm(user, profile || {});
     await loadDashboardData(user.uid, role);
     return;
   }
 
+  setupProfileForm(user, profile || {});
   await loadDashboardData(user.uid, role);
 });

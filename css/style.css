@@ -1147,6 +1147,7 @@ ol[class] { list-style: none; padding: 0; }
 
 .auth-form { display: grid; gap: var(--sp-5); }
 .auth-form[hidden] { display: none; }
+.auth-status--error { color: var(--danger); }
 .field__label {
   font-size: var(--step--1);
   font-weight: 600;

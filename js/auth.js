@@ -103,9 +103,10 @@ export function describeError(error) {
     case "auth/user-not-found":
       return "User not found.";
     case "auth/wrong-password":
-      return "Incorrect password.";
+      return "Incorrect email or password.";
     case "auth/invalid-credential":
-      return "Invalid email or password.";
+    case "auth/invalid-login-credentials":
+      return "Invalid email or password. Please check your details and try again.";
     case "auth/weak-password":
       return "Password should be at least 6 characters.";
     case "auth/too-many-requests":
@@ -230,6 +231,11 @@ function setupForms() {
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
 
+      if (status) {
+        status.textContent = "";
+        status.classList.remove("auth-status--error");
+      }
+
       if (!form.reportValidity()) {
         return;
       }
@@ -281,11 +287,13 @@ function setupForms() {
         }
       } catch (error) {
         console.error(error);
-        setAuthBusy(form, false, formType === "register" ? "Create account" : "Sign in");
 
         if (status) {
           status.textContent = describeError(error);
+          status.classList.add("auth-status--error");
         }
+      } finally {
+        setAuthBusy(form, false, formType === "login" ? "Sign in" : "Create account");
       }
     });
   });
