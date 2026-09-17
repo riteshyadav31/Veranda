@@ -37,9 +37,9 @@
           <nav class="dash__menu" aria-label="Dashboard sections">
             <a class="is-active" href="#overview" data-dash-link="overview">Overview</a>
             <a href="#listings" data-dash-link="listings" data-seller-only>My Listings</a>
-            <a href="my-enquiries.html" data-buyer-only>My Enquiries</a>
-            <a href="enquiries.html" data-seller-only>My Enquiries</a>
-            <a href="favorites.html">Favorites</a>
+            <a href="#favorites" data-dash-link="favorites" data-buyer-only>Favorites</a>
+            <a href="#enquiries" data-dash-link="enquiries" data-buyer-only>My Enquiries</a>
+            <a href="#enquiries" data-dash-link="enquiries" data-seller-only>My Enquiries</a>
             <a href="#profile" data-dash-link="profile">Profile</a>
             <button type="button" data-dashboard-logout>Logout</button>
           </nav>
@@ -52,27 +52,27 @@
                 <h1>Overview</h1>
                 <p>A summary of your listings and the interest they are getting.</p>
               </div>
-              <a class="btn btn--primary" href="add-property.html">List a property</a>
+              <a class="btn btn--primary" href="add-property.html" data-seller-only>List a property</a>
             </div>
 
             <div class="stat-row">
-              <div class="stat"><span>Total listings</span><strong data-stat-total>0</strong></div>
-              <div class="stat"><span>For sale</span><strong data-stat-sale>0</strong></div>
-              <div class="stat"><span>For rent</span><strong data-stat-rent>0</strong></div>
-              <div class="stat"><span>Favorites</span><strong data-stat-favorites>0</strong></div>
+              <div class="stat" data-seller-only><span>Total listings</span><strong data-stat-total>0</strong></div>
+              <div class="stat" data-seller-only><span>For sale</span><strong data-stat-sale>0</strong></div>
+              <div class="stat" data-seller-only><span>For rent</span><strong data-stat-rent>0</strong></div>
+              <div class="stat" data-buyer-only><span>Favorites</span><strong data-stat-favorites>0</strong></div>
               <div class="stat"><span>Total enquiries</span><strong data-stat-enquiries-total>0</strong></div>
               <div class="stat"><span>New enquiries</span><strong data-stat-enquiries-new>0</strong></div>
               <div class="stat"><span>Contacted</span><strong data-stat-enquiries-contacted>0</strong></div>
               <div class="stat"><span>Closed</span><strong data-stat-enquiries-closed>0</strong></div>
-              <div class="stat"><span>Last updated</span><strong data-stat-updated>&mdash;</strong></div>
+              <div class="stat" data-seller-only><span>Last updated</span><strong data-stat-updated>&mdash;</strong></div>
             </div>
 
             <div class="panel">
               <div class="section-head" style="margin-bottom: 1.25rem">
-                <h3>Recent listings</h3>
+                <h3 data-dashboard-list-title>Recent listings</h3>
                 <div style="display:flex; gap: 0.5rem; flex-wrap: wrap;">
-                  <a class="btn btn--ghost btn--sm" href="#listings" data-dash-link="listings">See all</a>
-                  <a class="btn btn--ghost btn--sm" href="favorites.html">View favorites</a>
+                  <a class="btn btn--ghost btn--sm" href="#listings" data-dash-link="listings" data-seller-only>See all</a>
+                  <a class="btn btn--ghost btn--sm" href="#favorites" data-dash-link="favorites" data-buyer-only>View favorites</a>
                 </div>
               </div>
               <div class="dash-list" data-recent-list></div>
@@ -91,16 +91,27 @@
             </div>
           </section>
 
+          <section data-dash-panel="favorites" data-buyer-only aria-label="Favorites" hidden>
+            <div class="section-head">
+              <div>
+                <h1>Favorites</h1>
+                <p>Your saved properties, available here without leaving the dashboard.</p>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="card-grid dashboard-card-grid" data-dashboard-favorites></div>
+            </div>
+          </section>
+
           <section data-dash-panel="enquiries" aria-label="Enquiries" hidden>
             <div class="section-head">
               <div>
-                <h1>Enquiries</h1>
-                <p>Messages from people who want to see your property.</p>
+                <h1 data-dashboard-enquiries-title>Enquiries</h1>
+                <p data-dashboard-enquiries-description>Messages related to your property activity.</p>
               </div>
             </div>
-            <div class="state">
-              <h3>No enquiries to show</h3>
-              <p>Enquiries sent from a listing page will collect here.</p>
+            <div class="panel">
+              <div class="dash-list enquiry-list" data-dashboard-enquiries></div>
             </div>
           </section>
 

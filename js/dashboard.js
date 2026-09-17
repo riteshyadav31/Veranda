@@ -17,8 +17,8 @@ import {
 
 import { auth, db, DB, isConfigured } from "./firebase-config.js";
 import { guardPage, getUserProfile, describeError, normalizeRole, signOut } from "./auth.js";
-import { getFavoriteIds } from "./favorites.js";
-import { fetchBuyerEnquiries, fetchSellerEnquiries } from "./enquiries.js";
+import { bindFavoriteButtons, fetchFavoriteProperties, getFavoriteIds } from "./favorites.js";
+import { fetchBuyerEnquiries, fetchSellerEnquiries, makeBuyerRow, makeSellerRow } from "./enquiries.js";
 import "./navbar.js";
 import {
   qs,
@@ -27,6 +27,7 @@ import {
   escapeHtml,
   renderState,
   renderLoading,
+  renderPropertyCards,
   formatPriceShort,
   formatDate,
   toDate,
@@ -110,13 +111,13 @@ function renderBuyerDashboard(user, profile) {
   const panels = qsa("[data-dash-panel]");
 
   menuLinks.forEach((link) => {
-    const keep = ["overview", "profile"].includes(link.dataset.dashLink);
-    link.hidden = !keep;
+    const keep = ["overview", "favorites", "enquiries", "profile"].includes(link.dataset.dashLink);
+    link.hidden = !keep || link.hasAttribute("data-seller-only");
     link.classList.toggle("is-active", link.dataset.dashLink === "overview");
   });
 
   panels.forEach((panel) => {
-    const shouldShow = ["overview", "profile"].includes(panel.dataset.dashPanel);
+    const shouldShow = ["overview", "favorites", "enquiries", "profile"].includes(panel.dataset.dashPanel);
     panel.hidden = !shouldShow;
   });
 
@@ -134,10 +135,49 @@ function renderBuyerDashboard(user, profile) {
   const overview = qs('[data-dash-panel="overview"]');
   if (overview) overview.hidden = false;
 
+  const listTitle = qs("[data-dashboard-list-title]");
+  if (listTitle) listTitle.textContent = "Recent favorites";
+
   const profilePanel = qs('[data-dash-panel="profile"]');
   if (profilePanel) {
     profilePanel.hidden = false;
   }
+}
+
+function renderDashboardFavorites(properties) {
+  const container = qs("[data-dashboard-favorites]");
+  if (!container) return;
+
+  renderPropertyCards(container, properties.map((property) => ({ ...property, isFavorite: true })), {
+    title: "No favorites yet",
+    message: "Save a property from the listings page and it will appear here."
+  }, {
+    onRender: (root) => bindFavoriteButtons(root, new Set(properties.map((property) => property.id)))
+  });
+}
+
+function renderDashboardEnquiries(enquiries, role) {
+  const container = qs("[data-dashboard-enquiries]");
+  const title = qs("[data-dashboard-enquiries-title]");
+  const description = qs("[data-dashboard-enquiries-description]");
+  if (!container) return;
+
+  if (title) title.textContent = role === "seller" ? "Buyer enquiries" : "My enquiries";
+  if (description) description.textContent = role === "seller"
+    ? "Messages from people who want to see your property."
+    : "Track the properties you have contacted and the status of each enquiry.";
+
+  if (!enquiries.length) {
+    renderState(container, {
+      title: role === "seller" ? "No enquiries received." : "No enquiries yet.",
+      message: role === "seller"
+        ? "New buyer enquiries will appear here for your listings."
+        : "Your enquiries about properties will appear here once you contact a seller."
+    });
+    return;
+  }
+
+  container.innerHTML = enquiries.map(role === "seller" ? makeSellerRow : makeBuyerRow).join("");
 }
 
 export async function fetchMyProperties(uid) {
@@ -259,9 +299,10 @@ export async function loadDashboardData(uid, role = "buyer") {
   const owned = qs("[data-owner-list]");
   renderLoading(recent, role === "seller" ? "Fetching your listings." : "Fetching your favorite properties.");
   renderLoading(owned, role === "seller" ? "Fetching your listings." : "Fetching your favorite properties.");
+  renderLoading(qs("[data-dashboard-favorites]"), "Fetching your favorite properties.");
+  renderLoading(qs("[data-dashboard-enquiries]"), "Fetching your enquiries.");
 
   try {
-    const favoriteCount = (await getFavoriteIds(uid)).length;
     if (role === "seller") {
       myProperties = await fetchMyProperties(uid);
       const enquiries = await fetchSellerEnquiries(uid);
@@ -271,11 +312,14 @@ export async function loadDashboardData(uid, role = "buyer") {
         contacted: enquiries.filter((item) => item.status === "contacted").length,
         closed: enquiries.filter((item) => item.status === "closed").length
       };
-      renderAll(favoriteCount, enquiryStats);
+      renderAll(0, enquiryStats);
+      renderDashboardEnquiries(enquiries, role);
       return;
     }
 
+    const favoriteCount = (await getFavoriteIds(uid)).length;
     const favoriteIds = await getFavoriteIds(uid);
+    const favoriteProperties = await fetchFavoriteProperties(uid);
     const buyerEnquiries = await fetchBuyerEnquiries(uid);
     const totalEnquiries = buyerEnquiries.length;
 
@@ -289,6 +333,8 @@ export async function loadDashboardData(uid, role = "buyer") {
         message: "Save properties you like to see them here."
       });
       renderStats([], favoriteCount, { total: totalEnquiries, new: 0, contacted: 0, closed: 0 });
+      renderDashboardFavorites([]);
+      renderDashboardEnquiries(buyerEnquiries, role);
       return;
     }
 
@@ -303,6 +349,8 @@ export async function loadDashboardData(uid, role = "buyer") {
 
     myProperties = properties;
     renderAll(favoriteCount, { total: totalEnquiries, new: 0, contacted: 0, closed: 0 });
+    renderDashboardFavorites(favoriteProperties);
+    renderDashboardEnquiries(buyerEnquiries, role);
   } catch (error) {
     const failure = {
       title: role === "seller" ? "Could not load your listings" : "Could not load your favorites",

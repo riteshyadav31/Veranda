@@ -133,6 +133,7 @@ export function renderState(
 
   container.innerHTML = `
     <div class="state" data-tone="${tone}">
+      ${tone === "loading" ? '<span class="loading-indicator" aria-hidden="true"><span></span><span></span><span></span></span>' : ""}
       <h3>${escapeHtml(title)}</h3>
       <p>${escapeHtml(message)}</p>
     </div>
@@ -270,6 +271,7 @@ export function propertyCardHTML(property) {
     `property-details.html?id=${encodeURIComponent(property.id)}`;
 
   const isFavorite = Boolean(property.isFavorite);
+  const showFavorite = property.showFavorite !== false;
 
   const isPlot =
     property.propertyType === "plot" ||
@@ -294,7 +296,7 @@ export function propertyCardHTML(property) {
 
       <div class="property-card__media">
 
-        ${favoriteButtonMarkup(property.id, isFavorite)}
+        ${showFavorite ? favoriteButtonMarkup(property.id, isFavorite) : ""}
 
         ${photoMarkup(
           primaryImage(property),

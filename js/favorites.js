@@ -124,6 +124,8 @@ export async function loadFavoritesPage() {
   const count = qs("[data-result-count]");
   if (!container) return;
 
+  renderLoading(container, "Loading your favorite properties.");
+
   const user = await guardPage();
   if (!user) return;
 
@@ -149,8 +151,6 @@ export async function loadFavoritesPage() {
     container.appendChild(browseButton);
     return;
   }
-
-  renderLoading(container, "Loading your favorite properties.");
 
   try {
     const favoriteProperties = await fetchFavoriteProperties(user.uid);

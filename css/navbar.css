@@ -74,6 +74,11 @@
 }
 .nav__back:hover { color: var(--green); }
 
+.user-role-seller .favorite-toggle,
+.user-role-seller [data-property-favorite] {
+  display: none !important;
+}
+
 @media (max-width: 900px) {
   .nav__account-menu {
     position: static;

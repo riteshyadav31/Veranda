@@ -118,6 +118,8 @@ function setupAccountMenu(nav) {
 }
 
 function renderAuthActions(nav, user, profile = null) {
+  document.body.classList.remove("user-role-buyer", "user-role-seller");
+
   if (pageName() === "login.html") {
     nav.classList.add("nav--auth");
     nav.innerHTML = `<div class="shell nav__inner">${brandMarkup()}<a class="nav__back" href="index.html">Back to Home</a></div>`;
@@ -137,6 +139,7 @@ function renderAuthActions(nav, user, profile = null) {
   if (!actions) return;
 
   if (!user) {
+    document.body.classList.add("user-role-guest");
     if (links) {
       links.innerHTML = `
         ${navLink("Properties", "properties.html")}
@@ -153,6 +156,7 @@ function renderAuthActions(nav, user, profile = null) {
   }
 
   const role = profile?.role === "seller" ? "seller" : "buyer";
+  document.body.classList.add(`user-role-${role}`);
   const name = profile?.name || user.displayName || user.email || "My account";
   const shortName = String(name).split(" ")[0] || "Account";
   const initials = String(name).split(/\s+/).map((part) => part[0]).join("").slice(0, 2).toUpperCase() || "A";
@@ -191,6 +195,8 @@ export function initNavbar() {
   const nav = qs("[data-nav]");
   if (!nav) return;
 
+  // Paint the public shell immediately while Firebase resolves auth state.
+  renderAuthActions(nav, null, null);
   markActiveLink(nav);
   setupScrollState(nav);
 

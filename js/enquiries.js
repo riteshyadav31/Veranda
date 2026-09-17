@@ -20,6 +20,7 @@ import {
 import "./navbar.js";
 import {
   qs,
+  renderLoading,
   renderState,
   showToast,
   formatDate,
@@ -64,7 +65,7 @@ function renderSellerEmpty(container) {
   });
 }
 
-function makeBuyerRow(enquiry) {
+export function makeBuyerRow(enquiry) {
   return `
     <div class="dash-item" data-enquiry-id="${escapeHtml(enquiry.id)}">
       <div>
@@ -84,7 +85,7 @@ function makeBuyerRow(enquiry) {
   `;
 }
 
-function makeSellerRow(enquiry) {
+export function makeSellerRow(enquiry) {
   const actions = [
     '<button type="button" class="btn btn--ghost btn--sm" data-enquiry-status="contacted" data-enquiry-id="' + escapeHtml(enquiry.id) + '">Mark as Contacted</button>',
     '<button type="button" class="btn btn--ghost btn--sm" data-enquiry-status="closed" data-enquiry-id="' + escapeHtml(enquiry.id) + '">Mark as Closed</button>'
@@ -224,6 +225,8 @@ export async function loadBuyerEnquiriesPage() {
   const count = qs("[data-result-count]");
   if (!container) return;
 
+  renderLoading(container, "Loading your enquiries.");
+
   try {
     const user = await guardPage();
     if (!user) return;
@@ -258,6 +261,8 @@ export async function loadSellerEnquiriesPage() {
   const container = qs("[data-enquiries-list]");
   const count = qs("[data-result-count]");
   if (!container) return;
+
+  renderLoading(container, "Loading buyer enquiries.");
 
   try {
     const user = await guardPage();
