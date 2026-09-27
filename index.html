@@ -15,8 +15,409 @@
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/responsive.css" />
     <link rel="stylesheet" href="css/navbar.css" />
+<style id="veranda-home-enhancements">
+/* =========================================================
+   VERANDA HOMEPAGE ENHANCEMENTS
+   Scoped ONLY to .home-page so other pages remain untouched.
+   ========================================================= */
+.home-page {
+  --home-accent: #b08a4a;
+  --home-accent-dark: #8e6b35;
+  --home-ink: #182018;
+  --home-muted: #667066;
+  --home-card: #ffffff;
+  overflow-x: hidden;
+  background:
+    radial-gradient(circle at 8% 10%, rgba(176,138,74,.08), transparent 28%),
+    radial-gradient(circle at 92% 28%, rgba(35,82,64,.07), transparent 26%);
+}
+
+.home-page .hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, rgba(248,246,240,.98), rgba(242,239,231,.92));
+}
+
+.home-page .hero::before,
+.home-page .hero::after {
+  content: "";
+  position: absolute;
+  border-radius: 999px;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.home-page .hero::before {
+  width: 420px;
+  height: 420px;
+  right: -150px;
+  top: -190px;
+  background: rgba(176,138,74,.10);
+  filter: blur(2px);
+  animation: homeFloat 9s ease-in-out infinite;
+}
+
+.home-page .hero::after {
+  width: 260px;
+  height: 260px;
+  left: -120px;
+  bottom: -150px;
+  background: rgba(38,87,68,.08);
+  animation: homeFloat 11s ease-in-out infinite reverse;
+}
+
+.home-page .hero__copy {
+  animation: homeFadeUp .8s ease both;
+}
+
+.home-page .hero__eyebrow {
+  animation: homeFadeUp .7s .08s ease both;
+}
+
+.home-page .hero h1 {
+  letter-spacing: -0.035em;
+}
+
+.home-page .hero__title-accent {
+  position: relative;
+  display: inline-block;
+}
+
+.home-page .hero__title-accent::after {
+  content: "";
+  position: absolute;
+  left: 4%;
+  right: 4%;
+  bottom: -4px;
+  height: 3px;
+  border-radius: 99px;
+  background: linear-gradient(90deg, var(--home-accent), transparent);
+  transform-origin: left;
+  animation: homeLine 1.2s .5s ease both;
+}
+
+.home-page .hero__cta .btn {
+  transition: transform .25s ease, box-shadow .25s ease, background .25s ease;
+}
+
+.home-page .hero__cta .btn:hover {
+  transform: translateY(-3px);
+}
+
+.home-page .hero__stats {
+  animation: homeFadeUp .8s .28s ease both;
+}
+
+.home-page .hero__stat {
+  transition: transform .25s ease;
+}
+
+.home-page .hero__stat:hover {
+  transform: translateY(-4px);
+}
+
+.home-page .hero__collage {
+  position: relative;
+  animation: homeFadeIn 1s .15s ease both;
+}
+
+.home-page .hero__frame {
+  overflow: hidden;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 18px 45px rgba(24,32,24,.12);
+  transition: transform .45s cubic-bezier(.2,.8,.2,1), box-shadow .45s ease;
+}
+
+.home-page .hero__frame::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 48%, rgba(8,15,11,.42));
+  pointer-events: none;
+}
+
+.home-page .hero__frame:hover {
+  transform: translateY(-8px) rotate(.35deg) scale(1.015);
+  box-shadow: 0 26px 60px rgba(24,32,24,.18);
+}
+
+.home-page .hero__frame .ph {
+  opacity: 0;
+}
+
+.home-page .hero__frame--tall {
+  background-image: url("1.avif");
+}
+
+.home-page .hero__frame--brass {
+  background-image: url("2.avif");
+  background-position: center;
+}
+
+.home-page .hero__frame--hide-sm {
+  background-image: url("3.avif");
+}
+
+.home-page .hero__badge {
+  position: absolute;
+  z-index: 2;
+  left: 18px;
+  right: 18px;
+  bottom: 16px;
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid rgba(255,255,255,.28);
+  border-radius: 14px;
+  color: #fff;
+  background: rgba(10,18,13,.58);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.home-page .search--raised {
+  position: relative;
+  z-index: 5;
+  box-shadow: 0 20px 55px rgba(24,32,24,.12);
+  transition: transform .3s ease, box-shadow .3s ease;
+}
+
+.home-page .search--raised:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 26px 65px rgba(24,32,24,.15);
+}
+
+.home-page .search__tab {
+  transition: color .2s ease, transform .2s ease;
+}
+
+.home-page .search__tab:hover {
+  transform: translateY(-1px);
+}
+
+.home-page .search__fields .field {
+  transition: transform .2s ease;
+}
+
+.home-page .search__fields .field:focus-within {
+  transform: translateY(-2px);
+}
+
+.home-page .search__fields .btn {
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.home-page .search__fields .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(24,32,24,.15);
+}
+
+.home-page .section-head {
+  animation: homeFadeUp .7s ease both;
+}
+
+.home-page .location-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform .35s ease, box-shadow .35s ease, border-color .35s ease;
+}
+
+.home-page .location-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(176,138,74,.13), transparent 60%);
+  opacity: 0;
+  transition: opacity .35s ease;
+}
+
+.home-page .location-card:hover {
+  transform: translateY(-7px);
+  box-shadow: 0 18px 40px rgba(24,32,24,.11);
+}
+
+.home-page .location-card:hover::before {
+  opacity: 1;
+}
+
+.home-page .location-card__name,
+.home-page .location-card__count {
+  position: relative;
+  z-index: 1;
+}
+
+.home-page .cta {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.home-page .cta::before {
+  content: "";
+  position: absolute;
+  width: 260px;
+  height: 260px;
+  border-radius: 50%;
+  right: -90px;
+  top: -130px;
+  background: rgba(255,255,255,.07);
+  z-index: -1;
+  animation: homeFloat 8s ease-in-out infinite;
+}
+
+.home-page .cta .btn {
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.home-page .cta .btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 25px rgba(0,0,0,.14);
+}
+
+.home-page .footer__col a,
+.home-page .footer__about a {
+  transition: opacity .2s ease, transform .2s ease;
+}
+
+.home-page .footer__col a:hover,
+.home-page .footer__about a:hover {
+  opacity: .72;
+}
+
+@keyframes homeFadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes homeFadeIn {
+  from { opacity: 0; transform: scale(.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes homeLine {
+  from { transform: scaleX(0); opacity: 0; }
+  to { transform: scaleX(1); opacity: 1; }
+}
+
+@keyframes homeFloat {
+  0%, 100% { transform: translate3d(0,0,0); }
+  50% { transform: translate3d(0,-14px,0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-page *,
+  .home-page *::before,
+  .home-page *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .home-page .hero__frame:hover,
+  .home-page .location-card:hover,
+  .home-page .search--raised:hover {
+    transform: none;
+  }
+}
+</style>
+
+  
+<style id="veranda-location-images">
+.home-page .location-card {
+  min-height: 210px;
+  display: flex;
+  align-items: flex-end;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background-size: cover;
+  background-position: center;
+  color: #fff;
+  border-radius: 18px;
+}
+
+.home-page .location-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background: linear-gradient(
+    180deg,
+    rgba(8, 15, 11, .04) 15%,
+    rgba(8, 15, 11, .72) 100%
+  );
+}
+
+.home-page .location-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(135deg, rgba(176,138,74,.18), transparent 55%);
+  opacity: 0;
+  transition: opacity .35s ease;
+}
+
+.home-page .location-card:hover::after {
+  opacity: 1;
+}
+
+.home-page .location-card > span {
+  width: 100%;
+  padding: 20px;
+  background: linear-gradient(180deg, transparent, rgba(0,0,0,.55));
+  text-shadow: 0 2px 12px rgba(0,0,0,.35);
+}
+
+.home-page .location-card__name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.home-page .location-card__count {
+  color: rgba(255,255,255,.86);
+}
+
+.home-page .location-card:hover {
+  transform: translateY(-8px) scale(1.015);
+}
+
+.home-page .location-card[href*="Civil%20Lines"] {
+  background-image: url("4.avif");
+}
+
+.home-page .location-card[href*="Georgetown"] {
+  background-image: url("6.avif");
+}
+
+.home-page .location-card[href*="Ashok%20Nagar"] {
+  background-image: url("5.avif");
+}
+
+.home-page .location-card[href*="Naini"] {
+  background-image: url("7.avif");
+}
+
+@media (max-width: 760px) {
+  .home-page .location-card {
+    min-height: 180px;
+  }
+
+  .home-page .location-card:hover {
+    transform: none;
+  }
+}
+</style>
+
   </head>
-  <body>
+  <body class="home-page">
     <a class="skip-link" href="#main">Skip to content</a>
 
     <header class="nav" data-nav></header>
@@ -25,7 +426,7 @@
       <section class="hero">
         <div class="shell hero__grid">
           <div class="hero__copy">
-            <p class="hero__eyebrow">412 homes listed this month</p>
+            <p class="hero__eyebrow">✦ 412 homes listed this month</p>
             <h1>Find the address you <span class="hero__title-accent">stay</span> at.</h1>
             <p>
               Verified listings from owners and licensed agents across Prayagraj and the
