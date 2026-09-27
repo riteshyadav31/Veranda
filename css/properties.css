@@ -1,0 +1,388 @@
+/* =========================================================
+   VERANDA — PROPERTIES PAGE
+   Page-scoped UI. Existing filtering field names/classes
+   are preserved for properties.js compatibility.
+   ========================================================= */
+
+.properties-page {
+  background:
+    radial-gradient(circle at 90% 12%, rgba(184, 145, 78, 0.08), transparent 25%),
+    var(--paper);
+}
+
+.properties-page .properties-head {
+  padding-bottom: 54px;
+}
+
+.properties-page .properties-head h1 {
+  max-width: 760px;
+  font-size: clamp(38px, 5vw, 62px);
+  line-height: .98;
+  letter-spacing: -.045em;
+}
+
+.properties-page .properties-head p {
+  max-width: 600px;
+  font-size: 16px;
+}
+
+/* Main search card */
+.properties-page .properties-search-section {
+  padding-top: 34px;
+}
+
+.properties-page .properties-search {
+  position: relative;
+  z-index: 4;
+  padding: 28px;
+  background: rgba(255, 255, 255, .96);
+  border: 1px solid rgba(19, 43, 35, .10);
+  border-radius: 22px;
+  box-shadow: 0 22px 60px rgba(19, 43, 35, .10);
+  backdrop-filter: blur(10px);
+}
+
+.properties-page .properties-search__top {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+.properties-page .properties-search__eyebrow {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--brass-dark);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+
+.properties-page .properties-search__intro h2 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 27px;
+  letter-spacing: -.025em;
+}
+
+.properties-page .properties-search__quick {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.properties-page .properties-search__quick-label {
+  margin-right: 3px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.properties-page .properties-search__quick-link {
+  padding: 7px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--ink);
+  background: var(--paper);
+  font-size: 11px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: .2s ease;
+}
+
+.properties-page .properties-search__quick-link:hover {
+  border-color: var(--green);
+  color: var(--green);
+  transform: translateY(-1px);
+}
+
+.properties-page .properties-search__main {
+  display: grid;
+  grid-template-columns: minmax(280px, 1.7fr) minmax(150px, .85fr) minmax(150px, .85fr) auto;
+  gap: 12px;
+  align-items: end;
+}
+
+.properties-page .property-search-field {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.properties-page .property-search-field label {
+  color: #5f6964;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.properties-page .property-search-field input,
+.properties-page .property-search-field select {
+  width: 100%;
+  min-height: 48px;
+  padding: 0 14px;
+  border: 1px solid #d9dfda;
+  border-radius: 12px;
+  background: #f8faf8;
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+
+.properties-page .property-search-field input::placeholder {
+  color: #89938e;
+}
+
+.properties-page .property-search-field input:hover,
+.properties-page .property-search-field select:hover {
+  border-color: #b9c7c0;
+}
+
+.properties-page .property-search-field input:focus,
+.properties-page .property-search-field select:focus {
+  outline: none;
+  background: #fff;
+  border-color: var(--green);
+  box-shadow: 0 0 0 4px var(--green-tint);
+}
+
+.properties-page .property-search-input {
+  position: relative;
+}
+
+.properties-page .property-search-input input {
+  padding-left: 42px;
+}
+
+.properties-page .property-search-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-53%);
+  color: #718079;
+  font-size: 21px;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.properties-page .properties-search__submit {
+  min-height: 48px;
+  padding-inline: 23px;
+  white-space: nowrap;
+  border-radius: 12px;
+}
+
+/* Advanced filter menu */
+.properties-page .advanced-filters {
+  margin-top: 14px;
+  border-top: 1px solid #e8ece9;
+}
+
+.properties-page .advanced-filters summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 17px 4px 3px;
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+}
+
+.properties-page .advanced-filters summary::-webkit-details-marker {
+  display: none;
+}
+
+.properties-page .advanced-filters__left {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.properties-page .advanced-filters__icon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--green-tint);
+  color: var(--green-dark);
+  font-size: 18px;
+}
+
+.properties-page .advanced-filters summary strong {
+  display: block;
+  color: var(--ink);
+  font-size: 12px;
+}
+
+.properties-page .advanced-filters summary small {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.properties-page .advanced-filters__toggle {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--ink);
+  font-size: 19px;
+  line-height: 1;
+  transition: transform .2s ease, background .2s ease;
+}
+
+.properties-page .advanced-filters[open] .advanced-filters__toggle {
+  transform: rotate(45deg);
+  background: var(--green-tint);
+}
+
+.properties-page .advanced-filters__body {
+  padding: 17px 0 3px;
+  animation: propertiesFilterOpen .22s ease both;
+}
+
+.properties-page .advanced-filter-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.properties-page .advanced-filters__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+  padding-top: 15px;
+  border-top: 1px solid #edf0ee;
+}
+
+.properties-page .advanced-filters__actions .btn {
+  min-height: 42px;
+  padding-inline: 17px;
+}
+
+@keyframes propertiesFilterOpen {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Results toolbar */
+.properties-page .toolbar {
+  margin-top: 24px;
+  margin-bottom: 20px;
+  padding: 0 2px;
+}
+
+.properties-page .toolbar__count {
+  font-size: 12px;
+}
+
+.properties-page .toolbar__sort {
+  gap: 8px;
+}
+
+.properties-page .toolbar__sort label {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.properties-page .toolbar__sort select {
+  min-height: 40px;
+  padding: 0 34px 0 12px;
+  border-radius: 10px;
+  background: #fff;
+  font-size: 12px;
+}
+
+/* Cards sit slightly closer to the results toolbar */
+.properties-page .card-grid {
+  padding-bottom: 10px;
+}
+
+/* Responsive */
+@media (max-width: 1050px) {
+  .properties-page .properties-search__main {
+    grid-template-columns: 1.5fr 1fr 1fr;
+  }
+
+  .properties-page .properties-search__submit {
+    grid-column: 1 / -1;
+  }
+
+  .properties-page .advanced-filter-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 760px) {
+  .properties-page .properties-search {
+    padding: 20px;
+    border-radius: 18px;
+  }
+
+  .properties-page .properties-search__top {
+    display: block;
+  }
+
+  .properties-page .properties-search__quick {
+    margin-top: 16px;
+    flex-wrap: wrap;
+  }
+
+  .properties-page .properties-search__main {
+    grid-template-columns: 1fr;
+  }
+
+  .properties-page .properties-search__submit {
+    width: 100%;
+    grid-column: auto;
+  }
+
+  .properties-page .advanced-filter-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 520px) {
+  .properties-page .properties-head h1 {
+    font-size: 38px;
+  }
+
+  .properties-page .properties-search-section {
+    padding-top: 20px;
+  }
+
+  .properties-page .properties-search__intro h2 {
+    font-size: 23px;
+  }
+
+  .properties-page .advanced-filter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .properties-page .advanced-filters__actions {
+    justify-content: stretch;
+  }
+
+  .properties-page .advanced-filters__actions .btn {
+    flex: 1;
+  }
+
+  .properties-page .toolbar {
+    align-items: flex-start;
+  }
+}

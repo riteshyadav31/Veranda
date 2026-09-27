@@ -15,88 +15,147 @@
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/responsive.css" />
     <link rel="stylesheet" href="css/navbar.css" />
+    <link rel="stylesheet" href="css/properties.css" />
   </head>
-  <body>
+
+  <body class="properties-page">
     <a class="skip-link" href="#main">Skip to content</a>
 
     <header class="nav" data-nav></header>
 
     <main id="main">
-      <section class="page-head">
+      <section class="page-head properties-head">
         <div class="shell">
           <nav class="crumbs" aria-label="Breadcrumb">
-            <a href="index.html">Home</a> <span aria-hidden="true">/</span> <span>Properties</span>
+            <a href="index.html">Home</a>
+            <span aria-hidden="true">/</span>
+            <span>Properties</span>
           </nav>
-          <h1>Properties for sale and rent</h1>
-          <p>Filter by locality, type and budget to narrow the list.</p>
+          <h1>Find a property that fits your life.</h1>
+          <p>Search verified homes, plots and commercial spaces by location, type and budget.</p>
         </div>
       </section>
 
-      <section class="section section--tight">
+      <section class="section section--tight properties-search-section">
         <div class="shell">
-          <div class="search" role="search">
-            <form class="search__fields" data-filter-form>
-              <div class="field">
-                <label for="filter-search">Search</label>
-                <input type="search" id="filter-search" name="search" placeholder="Title, location or description" />
+          <div class="properties-search" role="search">
+            <div class="properties-search__top">
+              <div class="properties-search__intro">
+                <span class="properties-search__eyebrow">PROPERTY SEARCH</span>
+                <h2>What are you looking for?</h2>
               </div>
-              <div class="field">
-                <label for="filter-listing-type">Listing type</label>
-                <select id="filter-listing-type" name="listingType">
-                  <option value="">All</option>
-                  <option value="sale">Sale</option>
-                  <option value="rent">Rent</option>
-                </select>
+
+              <div class="properties-search__quick">
+                <span class="properties-search__quick-label">Browse by</span>
+                <a href="properties.html?listingType=sale" class="properties-search__quick-link">For sale</a>
+                <a href="properties.html?listingType=rent" class="properties-search__quick-link">For rent</a>
               </div>
-              <div class="field">
-                <label for="filter-property-type">Property type</label>
-                <select id="filter-property-type" name="propertyType">
-                  <option value="">All</option>
-                  <option value="apartment">Apartment</option>
-                  <option value="house">House</option>
-                  <option value="villa">Villa</option>
-                  <option value="plot">Plot</option>
-                  <option value="commercial">Commercial</option>
-                  <option value="other">Other</option>
-                </select>
+            </div>
+
+            <form class="properties-search__form" data-filter-form>
+              <div class="properties-search__main">
+                <div class="property-search-field property-search-field--location">
+                  <label for="filter-search">Search location</label>
+                  <div class="property-search-input">
+                    <span class="property-search-icon" aria-hidden="true">⌕</span>
+                    <input
+                      type="search"
+                      id="filter-search"
+                      name="search"
+                      placeholder="Search by title, locality or description"
+                    />
+                  </div>
+                </div>
+
+                <div class="property-search-field">
+                  <label for="filter-listing-type">Listing type</label>
+                  <select id="filter-listing-type" name="listingType">
+                    <option value="">All listings</option>
+                    <option value="sale">For sale</option>
+                    <option value="rent">For rent</option>
+                  </select>
+                </div>
+
+                <div class="property-search-field">
+                  <label for="filter-property-type">Property type</label>
+                  <select id="filter-property-type" name="propertyType">
+                    <option value="">All types</option>
+                    <option value="apartment">Apartment</option>
+                    <option value="house">House</option>
+                    <option value="villa">Villa</option>
+                    <option value="plot">Plot</option>
+                    <option value="commercial">Commercial</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+
+                <button class="properties-search__submit btn btn--primary" type="submit">
+                  Search properties
+                </button>
               </div>
-              <div class="field">
-                <label for="filter-min-price">Minimum price</label>
-                <input type="number" id="filter-min-price" name="minPrice" min="0" placeholder="0" />
-              </div>
-              <div class="field">
-                <label for="filter-max-price">Maximum price</label>
-                <input type="number" id="filter-max-price" name="maxPrice" min="0" placeholder="No limit" />
-              </div>
-              <div class="field">
-                <label for="filter-bedrooms">Bedrooms</label>
-                <select id="filter-bedrooms" name="bedrooms">
-                  <option value="">Any</option>
-                  <option value="1">1+</option>
-                  <option value="2">2+</option>
-                  <option value="3">3+</option>
-                  <option value="4">4+</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="filter-bathrooms">Bathrooms</label>
-                <select id="filter-bathrooms" name="bathrooms">
-                  <option value="">Any</option>
-                  <option value="1">1+</option>
-                  <option value="2">2+</option>
-                  <option value="3">3+</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="filter-min-area">Minimum area</label>
-                <input type="number" id="filter-min-area" name="minArea" min="0" placeholder="sq ft" />
-              </div>
-              <div class="field">
-                <label for="filter-max-area">Maximum area</label>
-                <input type="number" id="filter-max-area" name="maxArea" min="0" placeholder="No limit" />
-              </div>
-              <button class="btn btn--primary" type="submit">Apply filters</button>
-              <button class="btn btn--ghost" type="reset">Clear filters</button>
+
+              <details class="advanced-filters">
+                <summary>
+                  <span class="advanced-filters__left">
+                    <span class="advanced-filters__icon" aria-hidden="true">☷</span>
+                    <span>
+                      <strong>More filters</strong>
+                      <small>Price, bedrooms, bathrooms &amp; area</small>
+                    </span>
+                  </span>
+                  <span class="advanced-filters__toggle" aria-hidden="true">+</span>
+                </summary>
+
+                <div class="advanced-filters__body">
+                  <div class="advanced-filter-grid">
+                    <div class="property-search-field">
+                      <label for="filter-min-price">Minimum price</label>
+                      <input type="number" id="filter-min-price" name="minPrice" min="0" placeholder="₹ 0" />
+                    </div>
+
+                    <div class="property-search-field">
+                      <label for="filter-max-price">Maximum price</label>
+                      <input type="number" id="filter-max-price" name="maxPrice" min="0" placeholder="No limit" />
+                    </div>
+
+                    <div class="property-search-field">
+                      <label for="filter-bedrooms">Bedrooms</label>
+                      <select id="filter-bedrooms" name="bedrooms">
+                        <option value="">Any</option>
+                        <option value="1">1+ bedroom</option>
+                        <option value="2">2+ bedrooms</option>
+                        <option value="3">3+ bedrooms</option>
+                        <option value="4">4+ bedrooms</option>
+                      </select>
+                    </div>
+
+                    <div class="property-search-field">
+                      <label for="filter-bathrooms">Bathrooms</label>
+                      <select id="filter-bathrooms" name="bathrooms">
+                        <option value="">Any</option>
+                        <option value="1">1+ bathroom</option>
+                        <option value="2">2+ bathrooms</option>
+                        <option value="3">3+ bathrooms</option>
+                      </select>
+                    </div>
+
+                    <div class="property-search-field">
+                      <label for="filter-min-area">Minimum area</label>
+                      <input type="number" id="filter-min-area" name="minArea" min="0" placeholder="sq ft" />
+                    </div>
+
+                    <div class="property-search-field">
+                      <label for="filter-max-area">Maximum area</label>
+                      <input type="number" id="filter-max-area" name="maxArea" min="0" placeholder="No limit" />
+                    </div>
+                  </div>
+
+                  <div class="advanced-filters__actions">
+                    <button class="btn btn--ghost" type="reset">Clear all filters</button>
+                    <button class="btn btn--primary" type="submit">Apply filters</button>
+                  </div>
+                </div>
+              </details>
             </form>
           </div>
 
@@ -166,6 +225,7 @@
         </div>
       </div>
     </footer>
+
     <script type="module" src="js/properties.js"></script>
   </body>
 </html>
